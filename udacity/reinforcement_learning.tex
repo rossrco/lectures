@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{framed}
+
+\title{Udacity Reinforcement Learning Course Notes}
+\author{Ross K}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+The main types of learning are:
+  \begin{itemize}
+    \item Supervised or function approximation
+    \item Unsupervised or clustering description
+    \item Reinforcement or production of both function and results
+  \end{itemize}
+\section{Markov Model}
+List of important terms:
+  \begin{itemize}
+    \item States: all configurations the system could be in
+    \item Actions: what can be done in a particular state
+    \item Markovian property: the probability of ending up in a state S’ only depends on the current state S
+    \item Rewards: a scalar value one gets for being in a state
+    \item Policy: solution to a Markov model
+  \end{itemize}
+The Markov policies are robust to the underlying stochasticity of the world. Unlike planning, that tells you a sequence of actions and some of the actions can have unintended consequences. The Markov policies instead tell you what action should be taken in any state.
+\subsection{Credit Assignment Problem}
+In the Markov Decision Process, every action leads to a new state. The new state may lead to new actions and so forth until the final state. Only the final state assigns a reward. The credit assignment problem is the one of figuring out what sequence of actions would lead to a reward in the long run. In contrast, in supervised learning, every action has a reward, so we are trying to build a function that maximizes reward for every action.
+\subsection{Sequences of Rewards}
+Utility for infinite rewards:
+\begin{equation*}
+  U(S_0, S_1, S_2, ...) = \sum_{t=0}^{\infty} R(S_t) = \infty
+\end{equation*}
+In this construct, the rewards (R) from all states (S) accumulate and always reach infinity.
+Utility for finite rewards (discounted rewards):
+\begin{equation*}
+  U(S_0, S_1, S_2, ...) = \sum_{t=0}^{\infty} \gamma^t R(S_t) = \infty, 0 <= \gamma < 1
+\end{equation*}
+In this construct, the rewards get discounted, so each following reward is worth progressively less than the previous one. This means that infinite amount of rewards can add up to a finite reward sum. This finite amount can be expressed as: $\frac{R_{max}}{1-\gamma}$
+Optimal policy is defined as:
+\begin{equation*}
+  \pi^* = argmax_{\pi} \exists \left[ \sum_{t=0}^{\infty} \gamma^t R(S_t) | \pi \right]
+\end{equation*}
+The above means that the optimal policy is the one that maximizes the sum of the discounted rewards.
+The utility of a particular state depends upon the policy we are following. And that is the expected set of states we are going to see from that point on given that we follow a policy (i.e. if that state is S0). This can be expressed as:
+\begin{equation*}
+  U^{\pi}(s) = \exists \left[ \sum_{t=0}^{\infty} \gamma^t R(S_t) | \pi, S_0 = S \right]
+\end{equation*}
+\begin{framed}
+Important: The reward for entering a state is not the utility of that state. The reward gives us the immediate feedback, but the utility gives is the long term feedback.
+\end{framed}
+The optimal action to take at a state is look at all the actions and sum up all the next states, the transition probabilities (the probability of ending in $S'$) times the utility of $S'$:
+\begin{equation*}
+  \pi^*(S) = argmax_a \sum_{S'} T(S, a, S') U(S')
+\end{equation*}
+The true utility of a state is the utility where the optimal policy is followed:
+\begin{equation*}
+  U(S) \equiv U^{\pi^*}(s)
+\end{equation*}
+The utility of a state is the reward for entering the state plus the discounted rewards we are going to get from that point on (the Bellmont Equation):
+\begin{equation}
+  U(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') U(S')
+\end{equation}
+
+\end{document}
