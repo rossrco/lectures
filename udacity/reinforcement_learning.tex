@@ -62,9 +62,41 @@ The true utility of a state is the utility where the optimal policy is followed:
 \begin{equation*}
   U(S) \equiv U^{\pi^*}(s)
 \end{equation*}
-The utility of a state is the reward for entering the state plus the discounted rewards we are going to get from that point on (the Bellmont Equation):
+The utility of a state is the reward for entering the state plus the discounted rewards we are going to get from that point on (the Bellman Equation):
 \begin{equation}
   U(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') U(S')
 \end{equation}
+\section{Solving the Bellman Equation}
+\subsection{Solving the Bellman Equation for Utilities}
+The Bellman equation is non-linear and contains $n$ unknowns since the number of states is $N$.To solve it, we use the following algorithm:
+  \begin{enumerate}
+    \item Start with arbitrary utilities
+    \item Update utilities based on neighbors
+    \item Repeat until convergence
+  \end{enumerate}
+We can express this as:
+\begin{equation}
+  \hat{U}_{t + 1}(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') \hat{U_t}(S')
+\end{equation}
+Where $\hat{U_t}(S')$ is the updated utility for iteration $t$. This approach works because, even though the utilities are arbitrary at the beginning, the reward at every iteration is the true reward. This means that overtime, the optimal reward will be calculated. This approach is called 'value iteration.'
+\subsection{Solving the Bellman Equation for Policies}
+We can solve the Bellman equation by finding policies and not requiring precise utility values (but just utility values that point to the correct policies). To do that we use the following algorithm:
+\begin{enumerate}
+  \item Start with an arbitrary policy
+  \item Evaluate the policy in terms of its utility $U_t = U(\pi_t)$.
+  \item Improve the policy $\pi_{t + 1} = argmax_a \sum_{S'} T(S, a, S') U_t(S')$.
+\end{enumerate}
+Following the policy-based algorithm, the Bellman equation looks like:
+\begin{equation}
+  U_t(S) = R(S) + \gamma \sum_{S'} T(S, \pi_t(S), S') U_t(S')
+\end{equation}
+In this case, $U_t$ is defined in terms of $U_t$ and not $U_{t - 1}$. Also, instead of selecting the action that maximizes the utility, we define the choice of action by our policy. That means that $argmax_a$ is gone and the equation is now linear. So now. we can solve a system of $n$ linear eqations with $N$ unknowns.
+\subsection{The Three Forms of the Bellman Equation}
+The Bellman equation can be expressed in three ways in terms of three of its sections. The tree forms are called V (value), Q (quality) and C (continuation):
+\begin{align}
+  &V(S) = max_a \left( R(S, a) + \gamma \sum_{S'} T(S, a, S') V(S') \right)\\
+  &Q(S, a) = R(S, a) + \gamma \sum_{S'} T(S, a, S') max_{a'} Q(S', a')\\
+  &C(S, a) = \gamma \sum_{S'} T(S, a, S') max_{a'} \left( R(S', a') + C(S', a') \right)
+\end{align}
 
 \end{document}
