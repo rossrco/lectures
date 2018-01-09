@@ -122,6 +122,21 @@ To evaluate a learner algorithm, the following indicators should be taken into c
 \section{Temporal Difference Learning}
 The model make predictions that take place over time and is called $TD\lambda$. The temporal difference learning is trying the predict the sum of discounted rewards over time. In a specific example of $TD\lambda$, we'll try to learn the value of every state in a Markov process. We can predict the value of a state based on a previous state as:
 \begin{equation*}
-  V_t(S_1) = \frac{(T - 1) V_{t - 1}(S_1) + R_t(S_1)}{T}
+  V_T(S_1) = \frac{(T - 1) V_{T - 1}(S_1) + R_T(S_1)}{T}
 \end{equation*}
+Where $V_T(S_1)$ is the value of the state, $R_T(S_1)$ is the reward for entering the state, $V_{T - 1}(S_1)$ is the sum of discounted values for all states until the previous moment in time, defined as $(T - 1)$.
+We can tranform this equation to:
+\begin{equation}
+  V_T(S_1) = V_{T - 1}(S_1) + \alpha_T \left( R_T(S_1) - V_{T - 1}(S_1) \right)
+\end{equation}
+Where $\alpha_T = \frac{1}{T}$ is the learning rate. The idea is that we add up some corrections to the previous results in every new epoch (every time the evaluation is done). The learning rate gets smaller and smaller at every epoch and we approach the actual value to be learned.
+Thus the new value is the difference between the reward that we got at the current step minus the value that we estimated at the previous step. In this expression of the $TD\lambda$, $\left( R_T(S_1) - V_{T - 1}(S_1) \right)$ is the error.
+\subsection{Properties of the Learning Rates}
+The value of the prediction eventually converges to the real value $\lim_{T\to\infty} V_T(S) = V(S)$, but on two conditions:
+\begin{align}
+  &\sum_{T} \alpha_T = \infty\\
+  &\sum_{T} \alpha_T^2 < \infty
+\end{align}
+\subsection{TD(1) Rule}
+
 \end{document}
