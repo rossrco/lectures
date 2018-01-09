@@ -14,20 +14,20 @@
 
 \section{Introduction}
 The main types of learning are:
-  \begin{itemize}
-    \item Supervised or function approximation
-    \item Unsupervised or clustering description
-    \item Reinforcement or production of both function and results
-  \end{itemize}
+\begin{itemize}
+  \item Supervised or function approximation
+  \item Unsupervised or clustering description
+  \item Reinforcement or production of both function and results
+\end{itemize}
 \section{Markov Model}
 List of important terms:
-  \begin{itemize}
-    \item States: all configurations the system could be in
-    \item Actions: what can be done in a particular state
-    \item Markovian property: the probability of ending up in a state S’ only depends on the current state S
-    \item Rewards: a scalar value one gets for being in a state
-    \item Policy: solution to a Markov model
-  \end{itemize}
+\begin{itemize}
+  \item States: all configurations the system could be in
+  \item Actions: what can be done in a particular state
+  \item Markovian property: the probability of ending up in a state S’ only depends on the current state S
+  \item Rewards: a scalar value one gets for being in a state
+  \item Policy: solution to a Markov model
+\end{itemize}
 The Markov policies are robust to the underlying stochasticity of the world. Unlike planning, that tells you a sequence of actions and some of the actions can have unintended consequences. The Markov policies instead tell you what action should be taken in any state.
 \subsection{Credit Assignment Problem}
 In the Markov Decision Process, every action leads to a new state. The new state may lead to new actions and so forth until the final state. Only the final state assigns a reward. The credit assignment problem is the one of figuring out what sequence of actions would lead to a reward in the long run. In contrast, in supervised learning, every action has a reward, so we are trying to build a function that maximizes reward for every action.
@@ -69,11 +69,11 @@ The utility of a state is the reward for entering the state plus the discounted 
 \section{Solving the Bellman Equation}
 \subsection{Solving the Bellman Equation for Utilities}
 The Bellman equation is non-linear and contains $n$ unknowns since the number of states is $N$.To solve it, we use the following algorithm:
-  \begin{enumerate}
-    \item Start with arbitrary utilities
-    \item Update utilities based on neighbors
-    \item Repeat until convergence
-  \end{enumerate}
+\begin{enumerate}
+  \item Start with arbitrary utilities
+  \item Update utilities based on neighbors
+  \item Repeat until convergence
+\end{enumerate}
 We can express this as:
 \begin{equation}
   \hat{U}_{t + 1}(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') \hat{U_t}(S')
@@ -98,5 +98,30 @@ The Bellman equation can be expressed in three ways in terms of three of its sec
   &Q(S, a) = R(S, a) + \gamma \sum_{S'} T(S, a, S') max_{a'} Q(S', a')\\
   &C(S, a) = \gamma \sum_{S'} T(S, a, S') max_{a'} \left( R(S', a') + C(S', a') \right)
 \end{align}
-
+\section{Behavior Structures}
+We are trying to learn different ways of interacting with the environment and pick the one that yields high reward. To achieve that, we introduce the following types of behavior:
+\begin{itemize}
+  \item Plan: The execution of predetermined actions. This approach is not optimal in stochastic environments (where not every action produces the intended result).
+  \item Conditional Plan: The plan contains conditional ('if') statements.
+  \item Stationary Policy / Universal Plan: Mapping state to action (every time the agent enters a new state, it assesses the environment again and draws a new plan). The issue with this approach is that th eplan is very large and policies need to be supplied for every possible state.
+\end{itemize}
+To evaluate a policy in a stochastic environment:
+\begin{enumerate}
+  \item Find the state transitions to immediate rewards
+  \item Find the reward values
+  \item Truncate according to the time horizon $T$
+  \item Summarize each sequence according to $U(S) = \sum_{i = 1}^{T} \gamma^i r_i$
+  \item Summarize over all sequences (by calculating their weighted averages $P = \sum_{S = 1}^{j} U(S_j) P(S_j)$ where $U(S_j)$ is the utility of the $j^th$ state and $P(S_j)$ is the probability of this sequence).
+\end{enumerate}
+To evaluate a learner algorithm, the following indicators should be taken into consideration:
+\begin{itemize}
+  \item Value of returned policy
+  \item Computational complexity
+  \item Sample complexity
+\end{itemize}
+\section{Temporal Difference Learning}
+The model make predictions that take place over time and is called $TD\lambda$. The temporal difference learning is trying the predict the sum of discounted rewards over time. In a specific example of $TD\lambda$, we'll try to learn the value of every state in a Markov process. We can predict the value of a state based on a previous state as:
+\begin{equation*}
+  V_t(S_1) = \frac{(T - 1) V_{t - 1}(S_1) + R_t(S_1)}{T}
+\end{equation*}
 \end{document}
