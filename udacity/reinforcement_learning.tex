@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{framed}
+\usepackage{tikz}
 
 \title{Udacity Reinforcement Learning Course Notes}
 \author{Ross K}
@@ -138,5 +140,66 @@ The value of the prediction eventually converges to the real value $\lim_{T\to\i
   &\sum_{T} \alpha_T^2 < \infty
 \end{align}
 \subsection{TD(1) Rule}
+The TD(1) Rule dictates that for every episode 'T' (epoch):
+\begin{enumerate}
+  \item Initialize the eligibility of all states: $e(S) = 0$ at the beginning of the episode
+  \item Initialize the estimate for the current episode with the value from the previous episode $V_T(S) = V_{T - 1}(S)$
+  \item Each time we take a step within the episode, we get a reward: $S_{t - 1} \xrightarrow{r_t} S_t$
+  \item We update the eligibility of the state we just left: $e(S_{t - 1}) = e(S_{t - 1}) + 1$
+  \item We compute the temporal difference for all states: $V_T(S) = V_T(S) + \newline \alpha_T \left( r_t + \gamma V_{T - 1}(S_t) - V_{T - 1}(S_{t - 1}) \right) e(S)$
+  \item We decay the eligibility for the state we just left: $e(S) = \gamma e(S)$
+\end{enumerate}
+\begin{framed}
+  Example:
+  For the following sequence $S_1 \xrightarrow{r_1} S_2 \xrightarrow{r_2} S_3 \xrightarrow{r_3} S_F$, let's calculate the corresponding values:
+  \begin{align*}
+    &\Delta V_T(S_1) = \alpha \left( r_1 + \gamma r_2 + \gamma^2 r_3 + \gamma^3 V_{T - 1} (S_F) - V_{T - 1} (S_1) \right) \\
+    &\Delta V_T(S_2) = \alpha \left( r_2 + \gamma r_3 + \gamma^2 V_{T - 1} (S_F) - V_{T - 1} (S_2) \right) \\
+    &\Delta V_T(S_3) = \alpha \left( r_3 + \gamma V_{T - 1} (S_F) - V_{T - 1} (S_3) \right)
+  \end{align*}
+\end{framed}
+The problem with the TD(1) rule is that it is far off from the maximum likelihood estimate. This is because TD(1) is using data from individual runs. So when a rare event occurs in a run, the estimate deviates a lot from the truth.
+\subsection{TD(0) Rule}
+This rule computes the maximum likelyhood estimate given the data is repeated. If a finite set of data is infinitely repeated, we get the effect of having an infinite set of data. The rule is defined as:
+\begin{align*}
+  &V_T(S_{t - 1}) = V_T(S_{t - 1}) + \alpha_T \left( r_t \gamma V_T(S_t) - V_T(S_{t - 1}) \right) \\
+  &V_T(S_{t - 1}) = \exists_{S_t} \left[ r + \gamma V_T(S_t) \right]
+\end{align*}
+\subsection{TD(Lambda) Rule}
+Both TD(0) and TD(1) have updates based on the difference between temporally successive predictions. That's why they can become local cases of an algorithm that unites both of them. The rule is almost identical to TD(1), but contains a multiplier at the decaying step $e(S) = \lambda \gamma e(S)$:
+\begin{enumerate}
+  \item Initialize the eligibility of all states: $e(S) = 0$ at the beginning of the episode
+  \item Initialize the estimate for the current episode with the value from the previous episode $V_T(S) = V_{T - 1}(S)$
+  \item Each time we take a step within the episode, we get a reward: $S_{t - 1} \xrightarrow{r_t} S_t$
+  \item We update the eligibility of the state we just left: $e(S_{t - 1}) = e(S_{t - 1}) + 1$
+  \item We compute the temporal difference for all states: $V_T(S) = V_T(S) + \newline \alpha_T \left( r_t + \gamma V_{T - 1}(S_t) - V_{T - 1}(S_{t - 1}) \right) e(S)$
+  \item We decay the eligibility for the state we just left: $e(S) = \lambda \gamma e(S)$
+\end{enumerate}
+\subsection{K-Step Estimators}
+K-step estimators can be thought of as various shades in between TD(0) and TD(1). They can be defined as:
+\begin{align*}
+  (E_1) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma V(S_{t + 1}) - V(S_t) \right) \\
+  (E_2) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma r_{t + 2} + \gamma^2 V(S_{t + 2}) - V(S_t) \right) \\
+  (E_3) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma r_{t + 2} + \gamma^2 r_{t + 3} \gamma^3 V(S_{t + 3}) - V(S_t) \right) \\
+  (E_K) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \ldots + \gamma^{K - 1} r_{t + K} \gamma^K V(S_{t + K}) - V(S_t) \right) \\
+  (E_{\infty}) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \ldots + \gamma^{K - 1} r_{t + K} \ldots - V(S_t) \right)
+\end{align*}
+Here, the first equation represents the TD(0) rule and the last one represents the TD(1) rule.
+\subsection{K-Step Estimators and TD(Lambda)}
+We can use a weighted combination of all K-step estimators. The weight we'll use is: $\lambda^{K - 1} (1 - \lambda)$. When lambda is 1, we put all the weight on the last estimator (the TD(1) rule) and when lambda is 0, we put all the weight on the first estimator (the TD(0) rule). All lambda values between 0 and 1 result in a weighted combination of all K-step estimators. Empyrically, the dependency between the error of the value estimation and lambda looks like this: \newline
+\begin{tikzpicture}
+  \draw[thick,->] (0,0) -- (4.5,0) node[anchor=north west] {$\lambda$};
+
+  \draw (0,0) -- (4,0);
+  \foreach \x in {0,1}
+    \draw (\x * 4 cm,1pt) -- (\x * 4 cm,-1pt) node[anchor=north] {$\x$};
+
+  \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south east] {Err(V)};
+  \draw (0,1) .. controls (1,0.5) and (3,0.25) .. (4,4);
+\end{tikzpicture}
+This means that lambda values between 0 and 1 would produce the most accurate results for temporal difference learning. The values where lambda bottoms out are between 0.3 and 0.7.
+\begin{framed}
+  The typical lambda value, most oftenly used is 0.7
+\end{framed}
 
 \end{document}
