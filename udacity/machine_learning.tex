@@ -1,0 +1,62 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{framed} %for important notes that need to be framed
+\usepackage{tikz}
+\usepackage{multicol} %for multi-column bullet points
+\usepackage{float} %for placing figures at the exact place as in the code
+\usepackage{lscape} %for inserting landscape pages
+
+\usepackage[a4paper, total={7in, 10in}]{geometry} %for formatting the sheet size
+
+\usepackage{graphicx}
+\graphicspath{ {./visualizations/} } %for inserting figures
+
+\usepackage{hyperref} %for hyperlinks
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    filecolor = magenta,
+    urlcolor = cyan,
+}
+
+\title{Udacity Machine Learning Nanodegree - Course Notes}
+
+\author{Ruslan Kozhuharov}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\setlength{\parskip}{1em}
+
+\section{Model Evaluation}
+\subsection{Confusion Matrix}
+The following table is called a confusion matrix:
+
+\begin{center}
+\begin{tabular}{ |l|l|l| }
+  \hline
+   & predicted 1 & predicted 0 \\
+  \hline
+  actual 1 & true positive & false negative \\
+  actual 0 & false positive & false negative \\
+  \hline
+\end{tabular}
+\end{center}
+
+The total number of cases is: true positives + true negatives + false negatives + false positives.
+
+\subsection{Accuracy}
+Accuracy is defined as: (true positives + true negatives) / total cases.
+If the data is severely skewed, the accuracy metric is misleading. If 250 000 credit card transactions are non-fraudulent and there are 500 fraudulent, a model that always predicts a non-fraudulent transaction has an accuracy of 99.8%.
+
+\subsection{Precision}
+Precision is defined as: out of all points predicted to be 1 how many are actually 1? The formulation is: true positives / (true positives + false positives). This corresponds to the first column of the confusion matrix. A spam filter model needs to have a high precision. This is because we want to have as few false positives (emails mistakenly identified as spam) as possible.
+
+\subsection{Recall}
+Recall can be defined as: out of all points that actually are 1, how many are correctly predicted as 1? The formulation is: true positives / (true positives + false negatives). This corresponds to the first row of the confusion matrix. A medical model needs to have a high recall in order to catch as many sick (positives) patients as possible. This prioritizes labeling the 1s correctly. This is because if a patient is falsely diagnosed as sick, they could be sent for further tests and could have some discomfort but no sick patient will be sent home.
+
+\end{document}
