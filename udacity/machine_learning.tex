@@ -59,4 +59,41 @@ Precision is defined as: out of all points predicted to be 1 how many are actual
 \subsection{Recall}
 Recall can be defined as: out of all points that actually are 1, how many are correctly predicted as 1? The formulation is: true positives / (true positives + false negatives). This corresponds to the first row of the confusion matrix. A medical model needs to have a high recall in order to catch as many sick (positives) patients as possible. This prioritizes labeling the 1s correctly. This is because if a patient is falsely diagnosed as sick, they could be sent for further tests and could have some discomfort but no sick patient will be sent home.
 
+\subsection{F1 Score}
+F1 score is defined as:
+
+\begin{equation}
+  F1 = 2 * \frac{precision * recall}{precision + recall}
+\end{equation}
+
+This is the harmonic mean of precision and recall.
+
+\subsection{Fbeta Score}
+Fbeta score is defined as:
+
+\begin{equation}
+  F_\beta = (1 + \beta^2) * \frac{precision * recall}{\beta^2 * precision + recall}
+\end{equation}
+
+Lower beta values skew the formula towards precision ($F_0 = precision$) and higher beta values skew the score towards recall ($F_\infty = recall$).
+
+True positive rate is true positives / all positives, while the false positive rate is the false positives / all negatives.
+
+\subsection{ROC Curves}
+Receiver Operating Characteristic (ROC) curves. This is a curve created by plotting the true positive rate and false positive rate as the x, y coordinates of every possible split of the model. This gives us a 2 dimensional curve. The area under this curve is the ROC score. It is 1 for a perfect classifier and 0.5 for a random classifier. The ROC score could be 0 if the model misclassifies every single point.
+
+\subsection{Regression Metrics}
+
+\begin{itemize}
+  \item mean absolute error
+  \item mean squared error (MSE)
+  \item R2 score
+\end{itemize}
+
+R2 score is a comparison between our model and the simplest possible model. For a linear regression, such a baseline model could just be a horizontal line drawn between the points. In this case, the R2 score is:
+
+\begin{equation}
+  R2 = 1 - \frac{MSE (current)}{MSE (baseline)}
+\end{equation}
+
 \end{document}
