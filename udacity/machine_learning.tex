@@ -96,4 +96,32 @@ R2 score is a comparison between our model and the simplest possible model. For 
   R2 = 1 - \frac{MSE (current)}{MSE (baseline)}
 \end{equation}
 
+\section{Model Selection}
+\subsection{K-Fold Cross Validation}
+It’s method of recycling our data in order to better utilize it for training and testing. Using this method we don’t ‘lose’ data for testing without violating the rule of use of the test set (never use the test set for training).
+
+\begin{enumerate}
+  \item We break the data into K buckets.
+  \item We train our model K times, each time using a different bucket as our testing set (and the remaining points as our training set).
+  \item We average the results from the K training to get a final model.
+\end{enumerate}
+
+\subsection{Learning Curves}
+If we plot on the x axis the number of training points used and on the y axis error, we can plot 2 series:
+
+\begin{itemize}
+  \item Error on training set
+  \item Error on testing set
+\end{itemize}
+
+Those two curves behave differently depending on the goodness of the model:
+
+\begin{itemize}
+  \item High bias model (underfitting): the training and the testing errors converge to a medium to high error.
+  \item Good model: the training and testing errors converge to a low error.
+  \item High variance model (overfitting): the training and testing errors don’t converge. This is because overfitted models always have very low errors on the training set, but don’t generalize well, therefore having a large error on the testing set.
+\end{itemize}
+
+
+
 \end{document}
