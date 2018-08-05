@@ -122,6 +122,13 @@ Those two curves behave differently depending on the goodness of the model:
   \item High variance model (overfitting): the training and testing errors don’t converge. This is because overfitted models always have very low errors on the training set, but don’t generalize well, therefore having a large error on the testing set.
 \end{itemize}
 
+\subsection{Grid Search}
+Grid search is a technique for hyperparameter tuning. It creates a n-dimensional grid of all hyperparameters and their possible values and tests every cell of the grid against a validation set. The best model is then chosen and tested on the testing set.
+
+For hyperparameters, it’s generally recommended to take values that grow exponentially (e.g. 1, 10, 100, 1000, etc.).
+
+\section{Supervised Learning}
+\subsection{Linear Regression}
 
 
 \end{document}
