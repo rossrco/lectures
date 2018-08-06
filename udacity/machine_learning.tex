@@ -129,6 +129,22 @@ For hyperparameters, it’s generally recommended to take values that grow expon
 
 \section{Supervised Learning}
 \subsection{Linear Regression}
+The linear regression algorithm draws a line that fits best a group of points. The line in two dimensions is determined by the linear equation:
 
+\begin{equation}
+  y = w_1 x + w_2
+\end{equation}
+
+Here, $w_1$ is the slope and $w_2$ is the intercept. Linear regression can be done using several different methods. Two of these methods are:
+
+\begin{itemize}
+  \item The Absolute Trick
+  \begin{enumerate}
+    \item We start with a line: $y = w_1 x + w_2$
+    \item We have a point with coordinates $(p, q)$, where p is the horizontal coordinate.
+    \item At each step, we translate and rotate the line according to the equation: $y = (w_1 + p * \alpha) * x + (w_2 + \alpha)$, where $\alpha$ is the learning rate. If the line is on top of the point, we subtract the learning rate instead of adding it. The horizontal coordinate P is used in the equation in order to account for the case where that coordinate is negative. In this case the line will rotate accordingly. Also, if p is small (close to the y axis), the rotation will be small.
+    \item We repeat step 3 until the error is minimized.
+  \end{enumerate}
+\end{itemize}
 
 \end{document}
