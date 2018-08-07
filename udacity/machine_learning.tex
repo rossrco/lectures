@@ -145,6 +145,35 @@ Here, $w_1$ is the slope and $w_2$ is the intercept. Linear regression can be do
     \item At each step, we translate and rotate the line according to the equation: $y = (w_1 + p * \alpha) * x + (w_2 + \alpha)$, where $\alpha$ is the learning rate. If the line is on top of the point, we subtract the learning rate instead of adding it. The horizontal coordinate P is used in the equation in order to account for the case where that coordinate is negative. In this case the line will rotate accordingly. Also, if p is small (close to the y axis), the rotation will be small.
     \item We repeat step 3 until the error is minimized.
   \end{enumerate}
+  \item The Square Trick
+  \begin{enumerate}
+    \item We start with a line: $y = w_1 x + w_2$
+    \item We have a point with coordinates (p, q), where p is the horizontal coordinate. We will designate q’ as the point where a line originating from (p, q) crosses the linear regression line. In this case q - q’ is the distance between the point and the linear regression line.
+    \item At each step, we translate and rotate the line according to the equation: $y = (w_1 + p (q - q') * \alpha) * x + (w_2 + p (q - q') * \alpha)$. If the line is on top the distance will be negative so the line will translate and rotate down automatically. Using the distance as a multiplier to the learning rate helps the algorithm converge faster.
+    \item We repeat step 3 until the error is minimized.
+  \end{enumerate}
 \end{itemize}
+
+For the error, we can use the mean absolute error and the mean squared error. The mean absolute error is defined as:
+
+\begin{equation}
+  \frac{1}{m}\sum_{i = 1}^{m}|y - \hat{y}|
+\end{equation}
+
+The mean squared error is defined as:
+
+\begin{equation}
+  \frac{1}{m}\sum_{i = 1}^{m}(y - \hat{y})^2
+\end{equation}
+
+To minimize the error:
+
+\begin{enumerate}
+  \item We take the partial derivative of our chosen error function with regards to the weights of the line equation.
+  \item We take a step towards lowering the derivative of the error.
+  \item We repeat step 2 until we reach a minimum.
+\end{enumerate}
+
+In our case the derivative of the mean absolute error is the same as the equation from the ‘absolute trick’, while the derivative of the mean squared error is the same as the equation in the ‘square trick’.
 
 \end{document}
