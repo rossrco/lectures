@@ -176,4 +176,14 @@ To minimize the error:
 
 In our case the derivative of the mean absolute error is the same as the equation from the ‘absolute trick’, while the derivative of the mean squared error is the same as the equation in the ‘square trick’.
 
+\subsection{Batch VS Stochastic Gradient Descent}
+In the context of linear regression, we could either:
+
+\begin{itemize}
+  \item Apply the absolute / square trick for every point of our data one by one and repeating it many times. When we do that, we get values to update our model weights with at every point. This approach is called stochastic gradient descent.
+  \item Apply the absolute / square trick for all points of our data simultaneously. Here we add all the update values and update the weights at the end of the process. This approach is called batch gradient descent.
+\end{itemize}
+
+In practice (and it is applicable for large datasets), the dataset is split into small batches, gradient descent is run for every batch and the weights are updated. This is called mini-batch gradient descent.
+
 \end{document}
