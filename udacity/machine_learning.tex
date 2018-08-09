@@ -6,6 +6,7 @@
 \usepackage{multicol} %for multi-column bullet points
 \usepackage{float} %for placing figures at the exact place as in the code
 \usepackage{lscape} %for inserting landscape pages
+\usepackage{makecell} %for specifying line breaks within table cells
 
 \usepackage[a4paper, total={7in, 10in}]{geometry} %for formatting the sheet size
 
@@ -185,5 +186,31 @@ In the context of linear regression, we could either:
 \end{itemize}
 
 In practice (and it is applicable for large datasets), the dataset is split into small batches, gradient descent is run for every batch and the weights are updated. This is called mini-batch gradient descent.
+
+\subsection{Regularization}
+Used for selecting simpler models with higher validation error over complex models with small validation error to prevent overfitting. The general concept is that we add the complexity of the model to the error. One way to do is to add the absolute value of the non-intercept coefficients to the model. The simpler the model, the less coefficients there will be. Regularization can be done in two ways:
+
+\begin{itemize}
+  \item L1 regularization: We add the sum of the absolute values of the coefficients to the error of the model.
+  \item L2 regularization: We add the squares of the coefficients.
+\end{itemize}
+
+Some models need to be less complex (e.g. video recommendation system that works with a lot of data and performance is important), while other models need to be more precise, no matter the complexity (e.g. medical model). That’s why we can use a parameter lambda (ƛ) to determine the level of complexity punishment. Small lambda allow for more complex models, while large lambda increases the complexity punishment.
+
+Here is a L1, L2 regularization cheatsheet:
+
+\begin{center}
+\begin{tabular}{ |l|l|l| }
+  \hline
+   Feature & L1 & L2 \\
+  \hline
+  computationally efficient & No & Yes \\
+  faster for sparse data & Yes & No \\
+  \makecell{detects important features and sets the \\ punishment for unimportant ones to 0} & Yes & No \\
+  \hline
+\end{tabular}
+\end{center}
+
+
 
 \end{document}
