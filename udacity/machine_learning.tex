@@ -211,6 +211,21 @@ Here is a L1, L2 regularization cheatsheet:
 \end{tabular}
 \end{center}
 
+\subsection{Perceptron}
+In a 2-dimensional classification problem, we need to split the space of two features into two regions (corresponding to the two classification labels). Let’s say that we can split the two regions with a simple line, where it’s equation is: $w_1 x_1 + w_2 x_2 + b = 0$. We can express this as Wx + b = 0, where W is the vector of the weights (w1, w2) and x is the vector of the coordinates of a given point (x1, x2). We can then say that our classification function $\hat{y}$ is:
+
+\begin{equation}
+  \hat{y} = \left\{
+              \begin{array}{ll}
+                1 , Wx + b \geq 0\\
+                0 , Wx + b < 0
+                \end{array}
+              \right.
+\end{equation}
+
+Defined such, this technique can be extended to higher dimensions. There, the vectors W and x are simply defined as ($w_1$, $w_2$, …, $w_n$) and ($x_1$, $x_2$, …, $x_n$).
+
+In order to update the weights of the perceptron, for every misclassified point we add or subtract (depending on the classification label) the points coordinates times the learning rate to the weights. This slightly changes the equation of the line (plane, hyperplane, etc.). We repeat this process until the decision boundary is optimal with as little misclassifications as possible.
 
 
 \end{document}
