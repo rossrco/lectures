@@ -227,5 +227,25 @@ Defined such, this technique can be extended to higher dimensions. There, the ve
 
 In order to update the weights of the perceptron, for every misclassified point we add or subtract (depending on the classification label) the points coordinates times the learning rate to the weights. This slightly changes the equation of the line (plane, hyperplane, etc.). We repeat this process until the decision boundary is optimal with as little misclassifications as possible.
 
+\subsection{Decision Trees}
+The more knowledge we have of a system, the less informational entropy it has. We will define informational entropy as:
+
+\begin{equation}
+  E = - \sum_{i = 1}^{n} p_i \log_2(p_i)
+\end{equation}
+
+Here $p_i$ is the probability of the $i^{th}$ feature.
+
+Information gain is defined as change in entropy:
+
+\begin{equation}
+  InfGain = E(parent) - \left( \frac{m}{m + n} E(child_1) + \frac{m}{m + n} E(child_2) \right)
+\end{equation}
+
+Here $m$ and $n$ are the number of samples in each node.
+
+This means that for each split, our decision tree needs to maximize information gain. This means that the tree will make random splits and measure the information gain. At each step the tree tries to make a new split that maximizes the information gain. When no more improvement is done, the tree attempts a new split. The problem with that approach is that it tends to overfit a lot.
+
+One way to solve this problem is to pick few random sets of only 2-3 features, build trees on them and let them vote. The average prediction of all small trees is the prediction of the ensemble. This approach is known as random forests.
 
 \end{document}
