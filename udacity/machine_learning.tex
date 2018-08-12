@@ -248,4 +248,25 @@ This means that for each split, our decision tree needs to maximize information 
 
 One way to solve this problem is to pick few random sets of only 2-3 features, build trees on them and let them vote. The average prediction of all small trees is the prediction of the ensemble. This approach is known as random forests.
 
+\subsection{Naive Bayes}
+The Bayes theorem switches from what we know to what we can infer. We take what we know and base what we can infer on it. Example: if we know that when it rains, the weather is cloudy, then we try to infer whether it will rain based on the fact that it is cloudy. If we know the probability of R given A, we infer the probability of A given R: $P(R|A) \rightarrow P(A|R)$.
+
+The simple version of the Bayes theorem is:
+
+\begin{equation}
+  P(A|B) = \frac{P(A) P(B|A)}{P(B)}
+\end{equation}
+
+The ‘naive’ in the Naive Bayes algorithm is the assumption that all events, for which we calculate the posterior probability are independent of each other. That means that we can multiply the posterior probabilities of all the possible events for class 1 and class 0. We then multiply them by the probability of class 1 or 0. Finally, we normalize:
+
+\begin{equation}
+  \begin{aligned}
+    P(A_1|B, C, D) &\sim P(B|A_1) P(C|A_1) P(D|A_1) P(A_1) \\
+    P(A_2|B, C, D) &\sim P(B|A_2) P(C|A_2) P(D|A_2) P(A_2) \\
+    P(A_1|B, C, D) &= \frac{P(A_1|B, C, D)}{P(A_1|B, C, D) + P(A_2|B, C, D)}
+  \end{aligned}
+\end{equation}
+
+
+
 \end{document}
