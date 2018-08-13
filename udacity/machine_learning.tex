@@ -267,6 +267,15 @@ The ‘naive’ in the Naive Bayes algorithm is the assumption that all events, 
   \end{aligned}
 \end{equation}
 
+\subsection{Support Vector Machines}
+SVM is an algorithm that tries to find a classification boundary in a set of points where the margin between the two classes is as wide as possible. This is achieved by minimizing the sum of the classification error and the margin error.
 
+The classification error is the sum of the absolute values of the line $Wx + b$ at every misclassified point (where W and x are vectors). This error resembles the perceptron function error.
+
+\begin{framed}
+  Example: if a misclassified point is on a line parallel to the perfect split and the distance between the perfect line and the misclassification line is 1, then the point lies on the line: $Wx + b = 1$.
+\end{framed}
+
+In order to punish the points in the boundary for the SVM algorithm, we consider the error of one class starting from: $Wx + b = 1$ and for the other class from: $Wx + b = -1$. That way we are punishing the misclassified points as well as the points in the boundary.
 
 \end{document}
