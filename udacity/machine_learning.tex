@@ -278,4 +278,24 @@ The classification error is the sum of the absolute values of the line $Wx + b$ 
 
 In order to punish the points in the boundary for the SVM algorithm, we consider the error of one class starting from: $Wx + b = 1$ and for the other class from: $Wx + b = -1$. That way we are punishing the misclassified points as well as the points in the boundary.
 
+If we have two support vectors with equations $Wx + b = 1$ and $Wx + b = -1$, then the margin is defined as:
+
+\begin{equation}
+  M = \frac{2}{|W|}
+\end{equation}
+
+So if we want to make the error inversely-proportional to the margin, we can just take the norm of the weights vector: $|W|$. The margin error is then defined as the norm of the components of vector $W$ squared:
+
+\begin{equation}
+  E = |W|^2
+\end{equation}
+
+The final error function is the classification error plus the margin error. We minimize this error using gradient descent.
+
+The ‘C’ parameter is multiplier to the classification error, that way we have the flexibility to specify in any model, how much the classification error and how much the margin error matters:
+
+\begin{equation}
+  E = C * E_{classification} + E_{margin}
+\end{equation}
+
 \end{document}
