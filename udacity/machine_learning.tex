@@ -298,4 +298,11 @@ The ‘C’ parameter is multiplier to the classification error, that way we hav
   E = C * E_{classification} + E_{margin}
 \end{equation}
 
+\subsubsection{Polynomial Kernel}
+A polynomial kernel takes the data to a higher dimension, creates the corresponding polynomial, extracts the coefficients and returns them as solutions to the lower dimensions. One example is if we have a line with points that are inseparable by a single cut. We then arrange them on the parabolic function $y = x^2$.
+
+We place the points on the parabola. If we find a cut in the line $y = 4$, we translate the solution to 1 dimension. We do that by solving for the polynomial (the solutions are 2 and -2). So as a result we have two cuts that separate the points. This is also known as the kernel trick. Thus, if we want to raise a 1 dimensional data to a higher dimension, we could use a function of the type: $x^2$, if we want to raise a 2 dimensional data to a higher dimension, we can use: $xy, x^2y, x^3$, etc.
+
+The degree of a polynomial kernel is a hyperparameter that can be trained to find the best possible model.
+
 \end{document}
