@@ -305,4 +305,9 @@ We place the points on the parabola. If we find a cut in the line $y = 4$, we tr
 
 The degree of a polynomial kernel is a hyperparameter that can be trained to find the best possible model.
 
+\subsubsection{Radial Basis Function Kernel}
+In this method, we draw the radial basis functions for every point. We then iterate through radius vectors that are suitable for cutting the different classes of points with an object in the same dimension (line, circle, plane, etc.). Finally, we project down the object to the original dimensions. For 1-dimensional data, the result from projecting another line are the points where we cut the classes. The hyper-parameter gamma allows us to specify the curve radius for every radial basis function. Large gamma gives us ‘pointy mountains’, while small one makes the curves rounder. This is because gamma is defined (in terms of the normal distribution) as: $\gamm = \frac{1}{2\sigma^2}$. Large gammas translate as very narrow class decision areas and therefore have a high chance of overfitting.
+
+
+
 \end{document}
