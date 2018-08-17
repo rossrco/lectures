@@ -308,6 +308,17 @@ The degree of a polynomial kernel is a hyperparameter that can be trained to fin
 \subsubsection{Radial Basis Function Kernel}
 In this method, we draw the radial basis functions for every point. We then iterate through radius vectors that are suitable for cutting the different classes of points with an object in the same dimension (line, circle, plane, etc.). Finally, we project down the object to the original dimensions. For 1-dimensional data, the result from projecting another line are the points where we cut the classes. The hyper-parameter gamma allows us to specify the curve radius for every radial basis function. Large gamma gives us ‘pointy mountains’, while small one makes the curves rounder. This is because gamma is defined (in terms of the normal distribution) as: $\gamm = \frac{1}{2\sigma^2}$. Large gammas translate as very narrow class decision areas and therefore have a high chance of overfitting.
 
+\subsection{Ensemble Methods}
+Ensemble methods are a set of techniques where we utilize several weak models to create a strong prediction. In general, there are two categories of ensemble methods: bagging (bootstrap aggregating) and boosting.
+
+\begin{itemize}
+  \item Bagging is a method where we get predictions from the weak learners, we then average the prediction and get our result.
+  \item Boosting is a method where each weak learner focuses only on a small sample of the dataset and attempts to predict it correctly. We then combine the predictions for different areas of the dataset from different weak learners to create a strong learner.
+\end{itemize}
+
+\subsubsection{Bagging Method}
+With the bagging method, we usually utilize tree stubs (decision trees with only 1 level) on random subsets of the data. This means that two samples can pick the same point (samples can overlap) and this is OK as long as the samples are random. For each random sample, we create a stub. At the end we combine the results of the stubs by voting. Example: a point is covered by 3 stubs, 2 of them vote category 1 and the other one votes category 0, therefore, we predict category 1.
+
 
 
 \end{document}
