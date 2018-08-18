@@ -306,7 +306,7 @@ We place the points on the parabola. If we find a cut in the line $y = 4$, we tr
 The degree of a polynomial kernel is a hyperparameter that can be trained to find the best possible model.
 
 \subsubsection{Radial Basis Function Kernel}
-In this method, we draw the radial basis functions for every point. We then iterate through radius vectors that are suitable for cutting the different classes of points with an object in the same dimension (line, circle, plane, etc.). Finally, we project down the object to the original dimensions. For 1-dimensional data, the result from projecting another line are the points where we cut the classes. The hyper-parameter gamma allows us to specify the curve radius for every radial basis function. Large gamma gives us ‘pointy mountains’, while small one makes the curves rounder. This is because gamma is defined (in terms of the normal distribution) as: $\gamm = \frac{1}{2\sigma^2}$. Large gammas translate as very narrow class decision areas and therefore have a high chance of overfitting.
+In this method, we draw the radial basis functions for every point. We then iterate through radius vectors that are suitable for cutting the different classes of points with an object in the same dimension (line, circle, plane, etc.). Finally, we project down the object to the original dimensions. For 1-dimensional data, the result from projecting another line are the points where we cut the classes. The hyper-parameter gamma allows us to specify the curve radius for every radial basis function. Large gamma gives us ‘pointy mountains’, while small one makes the curves rounder. This is because gamma is defined (in terms of the normal distribution) as: $\gamma = \frac{1}{2\sigma^2}$. Large gammas translate as very narrow class decision areas and therefore have a high chance of overfitting.
 
 \subsection{Ensemble Methods}
 Ensemble methods are a set of techniques where we utilize several weak models to create a strong prediction. In general, there are two categories of ensemble methods: bagging (bootstrap aggregating) and boosting.
@@ -319,6 +319,17 @@ Ensemble methods are a set of techniques where we utilize several weak models to
 \subsubsection{Bagging Method}
 With the bagging method, we usually utilize tree stubs (decision trees with only 1 level) on random subsets of the data. This means that two samples can pick the same point (samples can overlap) and this is OK as long as the samples are random. For each random sample, we create a stub. At the end we combine the results of the stubs by voting. Example: a point is covered by 3 stubs, 2 of them vote category 1 and the other one votes category 0, therefore, we predict category 1.
 
+\subsubsection{Boosting Method With AdaBoost}
+We’ll attempt to minimize the sum of the weights of the incorrectly-classified points.
+
+\begin{enumerate}
+  \item We assign to each point in the dataset an initial weight of 1.
+  \item We create a decision tree stub.
+  \item We change the weights of the incorrectly-classified points to: number correctly-classified / number incorrectly-classified (from the stub in step 2).
+  \item We repeat step 2-3 for certain number of cycles.
+  \item We assign a weight to all the weak learners produced in step 4. The weight is: $w = ln \left( \frac{accuracy}{1 - accuracy} \right)$. In the extreme cases of division by zero or accuracy 0 (where $ln(0)$ is undefined), we know that the model either predicts the data infinitely-correctly or infinitely-incorrectly, so we can ignore all the other stubs and just use the current one. This case, however is almost impossible to happen in practice.
+  \item We combine the stubs from step 4 by vote and weighting the vote by the weights from step 5. This vote is basically the weighted sum of the model predictions for every point. If the values are positive, the result is class 1, if the values are negative, the result is class 0.
+\end{enumerate}
 
 
 \end{document}
