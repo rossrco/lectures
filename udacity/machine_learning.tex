@@ -350,6 +350,9 @@ K-means is very dependent on the initial placements of the centroids. In this ca
 
 The K-means clustering algorithm is advantageous if we know the number of clusters beforehand and if they are neatly-separated. However, K-means relies on distance between points and centroids. Therefore, the results of applying of K-means are always circular, spherical or hyperspherical. K-means is not able to carve out the two-crescent dataset, for example.
 
+\subsection{Hierarchical Clustering}
+Hierarchical clustering methods assume that initially every point is a cluster. At the next pass, points closest to each other form a cluster of two points. The constitutes one level of the hierarchical tree (dendrogram). At this point the hierarchical clustering methods start combining points with existing clusters (from the first pass). There lies the principal differences between all hierarchical clustering methods - in the way the smallest distance between a cluster and a point is measured. In other words, the specific clustering method answers the question: how is the shortest distance between two clusters defined? Is it the shortest distance between points from each cluster or is it some averaged variable.
+
 
 
 
