@@ -353,6 +353,9 @@ The K-means clustering algorithm is advantageous if we know the number of cluste
 \subsection{Hierarchical Clustering}
 Hierarchical clustering methods assume that initially every point is a cluster. At the next pass, points closest to each other form a cluster of two points. The constitutes one level of the hierarchical tree (dendrogram). At this point the hierarchical clustering methods start combining points with existing clusters (from the first pass). There lies the principal differences between all hierarchical clustering methods - in the way the smallest distance between a cluster and a point is measured. In other words, the specific clustering method answers the question: how is the shortest distance between two clusters defined? Is it the shortest distance between points from each cluster or is it some averaged variable.
 
+For single link clustering, the shortest distance is defined as the shortest distance between any two points of the two clusters being compared. This, however leads single-link clustering to produce elongated clusters or to having a single cluster eating-up most of the dataset. This could be a problem if we want more compact, spherical and separated clusters. Single link clustering methods separate well the two crescents and the two rings datasets.
+
+Dendrograms are really useful tools for clustering because they visualize the relationship between clusters well for data that has more than two dimensions. If we try to eyeball clusters on a scatter plot, having more than two dimensions will make it impossible. However, dendrograms present clusters on a graph independently of the dimensionality of a dataset.
 
 
 
