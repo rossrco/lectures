@@ -357,6 +357,31 @@ For single link clustering, the shortest distance is defined as the shortest dis
 
 Dendrograms are really useful tools for clustering because they visualize the relationship between clusters well for data that has more than two dimensions. If we try to eyeball clusters on a scatter plot, having more than two dimensions will make it impossible. However, dendrograms present clusters on a graph independently of the dimensionality of a dataset.
 
+Agglomerative clustering is the family of algorithms that start from the bottom-up, assuming that each point is a cluster and building higher-order clusters from there on.
+
+Some important types of agglomerative, hierarchical clustering methods are:
+
+\begin{itemize}
+  \item Complete link clustering: it looks at the farthest two points between clusters when grouping. Such a distance measure produces more compact clusters (generally thought of as better than single-link clustering). The disadvantage of this method is that it only looks at the farthest point in a cluster. Once this point is found the rest of the points are ignored, even though they could form another cluster on their own.
+  \item Average link clustering: it looks at the distance between every point in a cluster and every point in the other cluster. The average of all these distances is considered the distance between the two clusters.
+  \item Ward’s method: it tries to minimize variance when merging two clusters.
+\end{itemize}
+
+The main advantages of hierarchical clustering are:
+
+\begin{itemize}
+  \item The resulting representations are highly-informative.
+  \item The representations provide us with additional ability to visualize the clustering (the dendrograms).
+  \item The methods are especially effective when the data contains real hierarchical relationships (e.g. evolutionary biology).
+\end{itemize}
+
+The disadvantages of hierarchical clustering are:
+
+\begin{itemize}
+  \item It is sensitive to noise and outliers.
+  \item It is computationally intensive $O(n^2)$.
+\end{itemize}
+
 
 
 \end{document}
