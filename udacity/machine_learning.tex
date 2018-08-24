@@ -382,6 +382,20 @@ The disadvantages of hierarchical clustering are:
   \item It is computationally intensive $O(n^2)$.
 \end{itemize}
 
+\subsection{Density-Based Clustering}
+DBSCAN - density-based spatial clustering of applications with noise. The principal difference between this method and hierarchical clustering methods is that not every point belongs to cluster. Some of the points get labeled as noise, while others, that are densely-packed are labeled as a cluster.
 
+DBSCAN does not take as input the number of clusters to separate. Instead it takes the search radius around each point epsilon and the minimum number of points required to form a density cluster. The DBSCAN algorithm is then defined as:
+
+\begin{enumerate}
+  \item Select a point.
+  \item If the number of points within radius epsilon is less than the minimum number of points to form a density cluster, label the point as noise.
+  \item If the number of points within radius epsilon is more or equal to the minimum number of points, form a cluster of those points.
+  \begin{itemize}
+    \item Select a point from the cluster.
+    \item If the number of points within radius epsilon, belonging to the cluster is less than the min number of points, then the point is a border point.
+    \item Else, the point is a core point.
+  \end{itemize}
+\end{enumerate}
 
 \end{document}
