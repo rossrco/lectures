@@ -398,4 +398,30 @@ DBSCAN does not take as input the number of clusters to separate. Instead it tak
   \end{itemize}
 \end{enumerate}
 
+DBSCAN is good at separating the two crescents, the two rings, the three lines (given the right hyperparameters) and especially the three clusters with noise.
+
+The advantages of DBSCAN are:
+
+\begin{itemize}
+  \item We don’t need to specify the number of clusters.
+  \item DBSCAN separates well various shapes and sizes of clusters (unlike K-means which is prone to separating spherical shapes or single-link clustering which is prone to separating elongated shapes).
+  \item Able to deal with noise and outliers.
+\end{itemize}
+
+The disadvantages of DBSCAN are:
+
+\begin{itemize}
+  \item Border points reachable from two clusters are assigned to the cluster that finds them first. Since points are visited in random order, DBSCAN is not guaranteed to return the same results.
+  \item DBSCAN cannot find clusters within the same dataset with varying densities. However, in this case we can use a variant of the algorithm called HDBSCAN.
+\end{itemize}
+
+Some applications of DBSCAN are:
+
+\begin{itemize}
+  \item Classification of network traffic.
+  \item Anomaly detection in temperature data (by utilizing the classification of noise by DBSCAN).
+\end{itemize}
+
+
+
 \end{document}
