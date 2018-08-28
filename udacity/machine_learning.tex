@@ -427,5 +427,19 @@ GMM is a soft clustering algorithm - every point belongs to every cluster but wi
 
 GMM in more than 1 dimension works by identifying the multivariate Gaussian distributions, finding their properties and assigning percentage of each label for every point.
 
+The algorithm that GMMs use is the expectation maximization algorithm:
+
+\begin{itemize}
+  \item Initialize k Gaussian distributions. This can be done by first running K-means clustering on the dataset and then using these clusters as initial ones for the GMM. Let’s say that this step has produced clusters A and B.
+  \item Soft cluster the data (expectation step). This is done by calculating the probability density function for every point:
+  \begin{equation}
+    E \left[ Z_{iA} \right] = \frac{N(X_i | \mu_A \sigma_{A}^{2})}{N(X_i | \mu_A \sigma_{A}^{2}) + N(X_i | \mu_B \sigma_{B}^{2})}
+  \end{equation}
+  , where A and B are the two labels (the two clusters), i is the ID of the point, Z is the latent variable. Here, N is defined as:
+  \begin{equation}
+    N(X_i | \mu_A \sigma_{A}^{2}) = \frac{1}{(2 \pi \sigma^2)^2} e^{-\frac{1}{2 \sigma^2}(x - \mu)^2}
+  \end{equation}
+  \item
+\end{itemize}
 
 \end{document}
