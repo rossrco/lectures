@@ -429,7 +429,7 @@ GMM in more than 1 dimension works by identifying the multivariate Gaussian dist
 
 The algorithm that GMMs use is the expectation maximization algorithm:
 
-\begin{itemize}
+\begin{enumerate}
   \item Initialize k Gaussian distributions. This can be done by first running K-means clustering on the dataset and then using these clusters as initial ones for the GMM. Let’s say that this step has produced clusters A and B.
   \item Soft cluster the data (expectation step). This is done by calculating the probability density function for every point:
   \begin{equation}
@@ -439,7 +439,20 @@ The algorithm that GMMs use is the expectation maximization algorithm:
   \begin{equation}
     N(X_i | \mu_A \sigma_{A}^{2}) = \frac{1}{(2 \pi \sigma^2)^2} e^{-\frac{1}{2 \sigma^2}(x - \mu)^2}
   \end{equation}
-  \item
-\end{itemize}
+  \item Re-estimate the clusters (maximization step). In this step we calculate a new mean $\mu$ and new variance $\sigma^2$ based on the results of step 2. To calculate the new mean, we take a weighted average of the expectations of all points (for every cluster):
+  \begin{equation}
+    \mu_A = \frac{\sum_{i = 1}^{N} E \left[ Z_{ij} \right] X_i}{\sum_{i = 1}^{N} E \left[ Z_{ij} \right]}
+  \end{equation}
+  To calculate the new variance, we calculate a weighted variance (weighted with the membership to each cluster):
+  \begin{equation}
+    \sigma_A^2 = \frac{\sum_{i = 1}^{N} E \left[ Z_{iA} \right] (X_i - \mu_A^{new})(X_i - \mu_A^{new})^T}{\sum_{i = 1}^{N} E \left[ Z_{iA} \right]}
+  \end{equation}
+  \item Evaluate the log likelihood to check for convergence. We evaluate the log likelihood according to:
+  \begin{equation}
+    ln(p(X|\mu,\sigma^2)) = \sum_{i = 1}^{N} ln\left( \sum_{k = 1}^{K} \pi_k N(X_i|\mu_k, \sigma_k^2) \right)
+  \end{equation}
+  where K is the cluster, $\pi_k$ is the mixing coefficient, N is the normal distribution for each point, given the parameter of the cluster. The higher this number is, the surer we are that the mixture model we generated is responsible for creating the data (fits the data). So we are trying to maximize this term. We iterate until this value reaches a maximum or increases by a very tiny amount.
+  \item Repeat step 2-4 until convergence.
+\end{enumerate}
 
 \end{document}
