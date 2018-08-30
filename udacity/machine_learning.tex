@@ -477,5 +477,33 @@ Some applications of GMM are:
   \item Biometrics (e.g. identifying signatures, fingerprints, voice recognition, etc.)
 \end{itemize}
 
+\subsection{Cluster Analysis}
+When the data is labeled, we can use external indices (based on the labels). However, in most cases, when performing clustering, the data is not labeled. In this case, we use:
+
+\begin{itemize}
+  \item Internal indices: based on the achieved structure and only the data itself.
+  \item Relative indices: based on comparison between different structures (clusters) and determining which one is better in a certain aspect. Most relative indices are also internal indices.
+\end{itemize}
+
+Internal and relative indices are measured using two main qualities:
+
+\begin{itemize}
+  \item Compactness: measure of how close the elements of a cluster are to each other.
+  \item Separability: measure of how far and distinct clusters are from each other.
+\end{itemize}
+
+External Validation Indices:
+
+\begin{itemize}
+  \item Adjusted Rand Score
+  \item Fawlks and Mallows
+  \item NMI measure
+  \item Jaccard
+  \item F-measure
+  \item Purity
+\end{itemize}
+
+
+
 
 \end{document}
