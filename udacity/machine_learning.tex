@@ -503,6 +503,18 @@ External Validation Indices:
   \item Purity
 \end{itemize}
 
+\subsubsection{Adjusted Rand Score}
+The Rand Index is defined as:
+
+\begin{equation}
+  \frac{a + b}{\binom{n}{2}}
+\end{equation}
+
+Where ‘a’ is the number of pairs that are in the same cluster in the actual and the predicted label, ‘b’ is the number of pairs that are in different clusters in the actual and the predicted label, n si the number of points in total. The Adjusted Rand Index includes a discounting factor for the expected Rand Index:
+
+\begin{equation}
+  ARI = \frac{RI - ExpectedIndex}{max(RI) - ExpectedIndex}
+\end{equation}
 
 
 
