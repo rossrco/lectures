@@ -516,6 +516,22 @@ Where ‘a’ is the number of pairs that are in the same cluster in the actual 
   ARI = \frac{RI - ExpectedIndex}{max(RI) - ExpectedIndex}
 \end{equation}
 
+\subsubsection{Silhouette Index}
+The silhouette index for each point is defined as:
+
+\begin{equation}
+  S_i = \frac{a_i - b_i}{max(a_i, b_i)}
+\end{equation}
+
+Where $a_i$ is the average distance between the point i and other samples in the same cluster, $b_i$ is the average distance between the point i and other samples in the closest neighboring cluster. The final silhouette coefficient is defined as the average of the silhouette scores for every point:
+
+\begin{equation}
+  S = \frac{1}{N} \sum_{i = 1}^{N} S_i
+\end{equation}
+
+It’s important to mention that silhouette score does not have the concept of noise built into it. Therefore, it’s not the right metric for DBSCAN clustering results. One downside of silhouette score is that not built to reward carving out datasets like the two rings. Therefore, algorithms that carve out the two rings perfectly (like single link clustering) get a lower silhouette score there than K-means.
+
+For clusters achieved using DBSCAN, the Density Based Clustering Validations (DBCV) is a much better internal score than the silhouette index.
 
 
 \end{document}
