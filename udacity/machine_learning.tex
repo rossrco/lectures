@@ -533,5 +533,13 @@ It’s important to mention that silhouette score does not have the concept of n
 
 For clusters achieved using DBSCAN, the Density Based Clustering Validations (DBCV) is a much better internal score than the silhouette index.
 
+\subsection{Feature Scaling}
+To make features’ impact on the model independent of their scale, we need to re-scale them by using the following formula:
+
+\begin{equation}
+  x' = \frac{x - x_{min}}{x_{max} - x_{min}}
+\end{equation}
+
+Each re-scaled feature can then be used for deriving the model. Some models, however are unaffected by the features’ scale (e.g. linear regression, decision trees), while other are (e.g. SVM).
 
 \end{document}
