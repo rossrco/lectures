@@ -542,4 +542,12 @@ To make features’ impact on the model independent of their scale, we need to r
 
 Each re-scaled feature can then be used for deriving the model. Some models, however are unaffected by the features’ scale (e.g. linear regression, decision trees), while other are (e.g. SVM).
 
+\subsection{Principal Component Analysis}
+Out of the existing data, PCA finds a new coordinate system, where the x’ axis is along the direction of the most variation of the data, the center of origin is at the ‘middle’ of the data and the y’ axis is orthogonal to the x’ axis.
+
+When using PCA, it is important to understand the latent variables - the features that are really driving the trends behind the target variable. If these are identified, the dataset, which could contain hundreds of features could be reduced to the latent features using PCA. Example of this could be transforming the square footage and number of rooms in a house to a composite feature called ‘house size’, since the two original features are an objective and a subjective measures of the size.
+
+
+
+
 \end{document}
