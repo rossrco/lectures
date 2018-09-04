@@ -547,7 +547,18 @@ Out of the existing data, PCA finds a new coordinate system, where the x’ axis
 
 When using PCA, it is important to understand the latent variables - the features that are really driving the trends behind the target variable. If these are identified, the dataset, which could contain hundreds of features could be reduced to the latent features using PCA. Example of this could be transforming the square footage and number of rooms in a house to a composite feature called ‘house size’, since the two original features are an objective and a subjective measures of the size.
 
+The advantage of projecting the principal component along the direction of largest variance is that we retain the maximum amount of information from the original data.
 
+To scale PCA beyond our intuition of the data, we can take all features and apply PCA to them. The PCA will then combine the features and rank the relative powers of the combinations. So if we have 2 latent features, PCA will pick them out and call them the 1st and 2nd principal components.
+
+PCA should be used to:
+
+\begin{itemize}
+  \item Identify latent features in the data
+  \item Reduce the dimensions of the data (e.g. for visualization of the data or for easier applications of k-means clustering)
+  \item Reduce noise
+  \item Pre-process the data before using it in another algorithm (e.g. regression or classification). In the cases of high-input dimensionality, the algorithm could fit to noise or end up running very slow. In this respect, PCA helps reduce noise and highlights the underlying trends in the data.
+\end{itemize}
 
 
 \end{document}
