@@ -560,5 +560,14 @@ PCA should be used to:
   \item Pre-process the data before using it in another algorithm (e.g. regression or classification). In the cases of high-input dimensionality, the algorithm could fit to noise or end up running very slow. In this respect, PCA helps reduce noise and highlights the underlying trends in the data.
 \end{itemize}
 
+\subsection{Random Projection}
+Random projection is done when the dimensions are so many that PCA is computationally inefficient. Instead of trying to find the direction of maximum variance like PCA, random projection just draws a random line and projects certain dimensions on it. For a dataset with a few dimensions, this produces a suboptimal effect but for a dataset with a large number of dimensions, it actually works.
+
+In practice, the dimensionality is reduced by multiplying the dataset by a random matrix. From d dimensions to k dimensions it looks like:
+
+\begin{equation}
+  X_{kxN}^{RP} = R_{kxd} X_{dxN}
+\end{equation}
+
 
 \end{document}
