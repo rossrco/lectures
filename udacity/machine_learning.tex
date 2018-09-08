@@ -569,5 +569,21 @@ In practice, the dimensionality is reduced by multiplying the dataset by a rando
   X_{kxN}^{RP} = R_{kxd} X_{dxN}
 \end{equation}
 
+The theoretical underpinning of random projection is the Johnson-Lindenstrauss lemma:
+
+\begin{framed}
+A dataset of N points in high-dimensional, Euclidean space can be mapped down to a space in much lower dimension in a way that preserves the distance between the points to a large degree.
+\end{framed}
+
+The distance between the points is slightly distorted, but by a limited factor called epsilon:
+
+\begin{equation}
+  (1 - \epsilon) ||u - v||^2 < ||p(u) - p(v)||^2 < (1 + \epsilon) ||u - v||^2
+\end{equation}
+
+The distance between two points in the projected version is squeezed between $(1 - \epsilon)$ and $(1 + \epsilon)$.
+
+In this sense, epsilon controls the number of dimensions our result will contain.
+
 
 \end{document}
