@@ -588,6 +588,17 @@ In this sense, epsilon controls the number of dimensions our result will contain
 \subsection{Independent Component Analysis}
 ICA assumes that the features in a dataset are a mixture of independent sources and tries to isolate these independent sources. A classic example is several recordings of some musical instruments and some noise playing simultaneously. In this example ICA would help us isolate the sounds of each instrument (this type of problem is called ‘blind source separation).
 
+The ICA algorithm is based on the notion that our input is formed by a vector of signals S multiplied by a mixing matrix A (X = SA). We can then find an ‘unmixing matrix’ W that approximates $A^{-1}$ such that S = WX. The algorithm then is:
+
+\begin{enumerate}
+  \item Center and whiten X
+  \item Choose an initial random weights matrix
+  \item Estimate W
+  \item Decorrelate W
+  \item Repeat steps 3 and 4 until convergence
+\end{enumerate}
+
+It’s important to note that ICA assumes that the independent components are non-Gaussian. Then based on the central limit theorem: the distribution of the sum of independent variables tends towards a Gaussian distribution.
 
 
 
