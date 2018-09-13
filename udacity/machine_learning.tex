@@ -600,6 +600,14 @@ The ICA algorithm is based on the notion that our input is formed by a vector of
 
 It’s important to note that ICA assumes that the independent components are non-Gaussian. Then based on the central limit theorem: the distribution of the sum of independent variables tends towards a Gaussian distribution.
 
+\section{Deep Learning}
+\subsection{Neural Networks}
+In cases of complex decision boundaries (curves), we cannot utilize a single perceptron to draw a good split between the positive and negative decision regions. That’s why we can utilize a network of several perceptrons. In order to optimize against a useful metric, we will define the so called error function.
+
+\subsubsection{Error Function}
+If we are using the accuracy as an error metric, we may end up stuck moving a line between positions where the accuracy is the same. Therefore the error function cannot be discrete, it should be continuous. That’s why we need a function that assigns a small penalty to correctly-classified points and large penalty for incorrectly-classified points. We could use the distance from the line for incorrectly-classified points as a measure for the error.
+
+
 
 
 \end{document}
