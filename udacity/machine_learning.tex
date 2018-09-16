@@ -607,6 +607,18 @@ In cases of complex decision boundaries (curves), we cannot utilize a single per
 \subsubsection{Error Function}
 If we are using the accuracy as an error metric, we may end up stuck moving a line between positions where the accuracy is the same. Therefore the error function cannot be discrete, it should be continuous. That’s why we need a function that assigns a small penalty to correctly-classified points and large penalty for incorrectly-classified points. We could use the distance from the line for incorrectly-classified points as a measure for the error.
 
+In order to create a continuous error function, we need to make a continuous prediction. To move from a discrete to continuous prediction, we need to change the activation function of the perceptron from step function to logistic function. In this case, the perceptron will have the following formulation:
+
+\begin{equation}
+  \sigma(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+
+To combine the sigmoid function with our weight function, we represent the lines throughout the decision space as Wx+b = -2, -1, 0, 1, 2, etc. As a result the prediction is:
+
+\begin{equation}
+  \hat{y} = \sigma(Wx + b)
+\end{equation}
+
 
 
 
