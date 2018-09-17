@@ -619,7 +619,14 @@ To combine the sigmoid function with our weight function, we represent the lines
   \hat{y} = \sigma(Wx + b)
 \end{equation}
 
+\subsubsection{Softmax Function}
+In the case of multiple labels we need to produce probabilities that add up to one. One way of doing that is by dividing the linear score for each label from the perceptron function by the sum of all other label scores. However, since the perceptron is based on a linear function $Wx + b = 0$, then the resulting scores from it could be positive as well as negative. This means that we can end up with a divisor equal to 0. Therefore we need a function that transforms every score to a positive value. Sucha a function is the exponent. For N classes, with scores Z1, Z2, ...Zn, the softmax function is defined as:
 
+\begin{equation}
+  P_{class-i} = \frac{e^{Z_i}}{\sum_{i = 1}^{N} e^{Z_i}}
+\end{equation}
+
+In the cases of only two classes the softmax function is equal to the logistic function. In the case of multiple classes, they need to be one-hot encoded.
 
 
 \end{document}
