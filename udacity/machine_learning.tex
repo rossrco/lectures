@@ -628,5 +628,16 @@ In the case of multiple labels we need to produce probabilities that add up to o
 
 In the cases of only two classes the softmax function is equal to the logistic function. In the case of multiple classes, they need to be one-hot encoded.
 
+\subsubsection{Maximum Likelihood}
+The maximum likelihood method picks the model that gives the existing labels the highest probabilities. Thus by maximizing the probabilities, we can pick the best possible model.
+
+If we treat all points as independent events we can calculate the probability that the result is as it is. We do this by multiplying the probabilities for each existing label given by the model (e.g. if a point is red - we use P(red) and vice versa). When we multiply the probabilities for all points, we get the probability that the current model is correct:
+
+\begin{equation}
+  P(arrangement) = \prod_{i = 1}^{N} P_i
+\end{equation}
+
+To improve the model, we try maximizing this probability.
+
 
 \end{document}
