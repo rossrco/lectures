@@ -639,5 +639,7 @@ If we treat all points as independent events we can calculate the probability th
 
 To improve the model, we try maximizing this probability.
 
+\subsubsection{Cross Entropy}
+Maximizing the probability of the arrangement would in turn minimize the error. However, there is a problem with the approach for calculating the probability of the arrangement. In the case of thousands of data points, the product of probabilities between 0 and 1 becomes tiny. Therefore, we need a similar function that expresses the probability of the arrangement but with summation instead. This function is the logarithmic function, since it turns products into sums: $log(ab) = log(a) + log(b)$.
 
 \end{document}
