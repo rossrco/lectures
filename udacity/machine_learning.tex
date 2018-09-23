@@ -646,6 +646,18 @@ Maximizing the probability of the arrangement would in turn minimize the error. 
   CE = - \sum_{i = 1}^{N} y_i ln(P_i) + (1 - y_i) ln(1 - P_i)
 \end{equation}
 
-Where y is the label (1 or 0). This expression is called cross entropy. The lower the cross entropy, the better the model. The negative of the logarithm of the probability for each point $(-ln(P_i))$ also can be interpreted as error for the corresponding point. This changes our goal from maximizing probability to minimizing cross entropy. Cross entropy is the connection between probability and error. 
+Where $y$ is the label (1 or 0). This expression is called cross entropy. The lower the cross entropy, the better the model. The negative of the logarithm of the probability for each point $(-ln(P_i))$ also can be interpreted as error for the corresponding point. This changes our goal from maximizing probability to minimizing cross entropy. Cross entropy is the connection between probability and error. For multilabel cross entropy, the expression is:
+
+\begin{equation}
+  CE = - \sum_{i = 1}^{n} \sum_{j = 1}^{m} y_{ij} ln(P_{ij})
+\end{equation}
+
+Where $m$ is the number of classes. Our final error function will depend on the cross entropy for each label. For a two label problem, the error function looks like this:
+
+\begin{equation}
+  E(W, b) = - \frac{1}{m} \sum_{i = 1}^{m} (1 - y_i) ln(1 - \sigma(Wx^{(i)} + b)) + y_i ln(\sigma(Wx^{(i)} + b))
+\end{equation}
+
+The multilabel error formula can be derived from the multilabel cross entropy formula.
 
 \end{document}
