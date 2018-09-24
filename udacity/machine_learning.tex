@@ -660,4 +660,21 @@ Where $m$ is the number of classes. Our final error function will depend on the 
 
 The multilabel error formula can be derived from the multilabel cross entropy formula.
 
+\subsubsection{Gradient Descent}
+The pseudocode algorithm for gradient descent is:
+
+\begin{enumerate}
+  \item Start with random weights W and bias b and draw a line based on them.
+  \item Calculate the error for every point.
+  \item For every point x:
+  \begin{itemize}
+    \item Update $w_i'$ by adding the learning rate times the derivative of the error with respect to: $w_i : w_i' \leftarrow w_i - \alpha \frac{\partial E}{\partial w_i}$. That is equal to: $w_i' \leftarrow w_i - \alpha (\hat{y} - y) x_i$.
+    \item Update $b : b' \leftarrow b - \alpha \frac{\partial E}{\partial w_i}$. That is equal to: $b' \leftarrow b - \alpha (\hat{y} - y)$.
+  \end{itemize}
+  \item Repeat step 3 until convergence.
+\end{enumerate}
+
+This makes the gradient descent algorithm very similar to the perceptron algorithm. The only difference is that gradient descent produces continuous probabilities for each point, while the perceptron classifies them as 0 or 1 (for the two label case).
+
+
 \end{document}
