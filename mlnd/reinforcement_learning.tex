@@ -1,0 +1,205 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{framed}
+\usepackage{tikz}
+
+\title{Udacity Reinforcement Learning Course Notes}
+\author{Ross K}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+The main types of learning are:
+\begin{itemize}
+  \item Supervised or function approximation
+  \item Unsupervised or clustering description
+  \item Reinforcement or production of both function and results
+\end{itemize}
+\section{Markov Model}
+List of important terms:
+\begin{itemize}
+  \item States: all configurations the system could be in
+  \item Actions: what can be done in a particular state
+  \item Markovian property: the probability of ending up in a state S’ only depends on the current state S
+  \item Rewards: a scalar value one gets for being in a state
+  \item Policy: solution to a Markov model
+\end{itemize}
+The Markov policies are robust to the underlying stochasticity of the world. Unlike planning, that tells you a sequence of actions and some of the actions can have unintended consequences. The Markov policies instead tell you what action should be taken in any state.
+\subsection{Credit Assignment Problem}
+In the Markov Decision Process, every action leads to a new state. The new state may lead to new actions and so forth until the final state. Only the final state assigns a reward. The credit assignment problem is the one of figuring out what sequence of actions would lead to a reward in the long run. In contrast, in supervised learning, every action has a reward, so we are trying to build a function that maximizes reward for every action.
+\subsection{Sequences of Rewards}
+Utility for infinite rewards:
+\begin{equation*}
+  U(S_0, S_1, S_2, ...) = \sum_{t=0}^{\infty} R(S_t) = \infty
+\end{equation*}
+In this construct, the rewards (R) from all states (S) accumulate and always reach infinity.
+Utility for finite rewards (discounted rewards):
+\begin{equation*}
+  U(S_0, S_1, S_2, ...) = \sum_{t=0}^{\infty} \gamma^t R(S_t) = \infty, 0 <= \gamma < 1
+\end{equation*}
+In this construct, the rewards get discounted, so each following reward is worth progressively less than the previous one. This means that infinite amount of rewards can add up to a finite reward sum. This finite amount can be expressed as: $\frac{R_{max}}{1-\gamma}$
+Optimal policy is defined as:
+\begin{equation*}
+  \pi^* = argmax_{\pi} \exists \left[ \sum_{t=0}^{\infty} \gamma^t R(S_t) | \pi \right]
+\end{equation*}
+The above means that the optimal policy is the one that maximizes the sum of the discounted rewards.
+The utility of a particular state depends upon the policy we are following. And that is the expected set of states we are going to see from that point on given that we follow a policy (i.e. if that state is S0). This can be expressed as:
+\begin{equation*}
+  U^{\pi}(s) = \exists \left[ \sum_{t=0}^{\infty} \gamma^t R(S_t) | \pi, S_0 = S \right]
+\end{equation*}
+\begin{framed}
+Important: The reward for entering a state is not the utility of that state. The reward gives us the immediate feedback, but the utility gives is the long term feedback.
+\end{framed}
+The optimal action to take at a state is look at all the actions and sum up all the next states, the transition probabilities (the probability of ending in $S'$) times the utility of $S'$:
+\begin{equation*}
+  \pi^*(S) = argmax_a \sum_{S'} T(S, a, S') U(S')
+\end{equation*}
+The true utility of a state is the utility where the optimal policy is followed:
+\begin{equation*}
+  U(S) \equiv U^{\pi^*}(s)
+\end{equation*}
+The utility of a state is the reward for entering the state plus the discounted rewards we are going to get from that point on (the Bellman Equation):
+\begin{equation}
+  U(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') U(S')
+\end{equation}
+\section{Solving the Bellman Equation}
+\subsection{Solving the Bellman Equation for Utilities}
+The Bellman equation is non-linear and contains $n$ unknowns since the number of states is $N$.To solve it, we use the following algorithm:
+\begin{enumerate}
+  \item Start with arbitrary utilities
+  \item Update utilities based on neighbors
+  \item Repeat until convergence
+\end{enumerate}
+We can express this as:
+\begin{equation}
+  \hat{U}_{t + 1}(S) = R(S) + \gamma_{max_a} \sum_{S'} T(S, a, S') \hat{U_t}(S')
+\end{equation}
+Where $\hat{U_t}(S')$ is the updated utility for iteration $t$. This approach works because, even though the utilities are arbitrary at the beginning, the reward at every iteration is the true reward. This means that overtime, the optimal reward will be calculated. This approach is called 'value iteration.'
+\subsection{Solving the Bellman Equation for Policies}
+We can solve the Bellman equation by finding policies and not requiring precise utility values (but just utility values that point to the correct policies). To do that we use the following algorithm:
+\begin{enumerate}
+  \item Start with an arbitrary policy
+  \item Evaluate the policy in terms of its utility $U_t = U(\pi_t)$.
+  \item Improve the policy $\pi_{t + 1} = argmax_a \sum_{S'} T(S, a, S') U_t(S')$.
+\end{enumerate}
+Following the policy-based algorithm, the Bellman equation looks like:
+\begin{equation}
+  U_t(S) = R(S) + \gamma \sum_{S'} T(S, \pi_t(S), S') U_t(S')
+\end{equation}
+In this case, $U_t$ is defined in terms of $U_t$ and not $U_{t - 1}$. Also, instead of selecting the action that maximizes the utility, we define the choice of action by our policy. That means that $argmax_a$ is gone and the equation is now linear. So now. we can solve a system of $n$ linear eqations with $N$ unknowns.
+\subsection{The Three Forms of the Bellman Equation}
+The Bellman equation can be expressed in three ways in terms of three of its sections. The tree forms are called V (value), Q (quality) and C (continuation):
+\begin{align}
+  &V(S) = max_a \left( R(S, a) + \gamma \sum_{S'} T(S, a, S') V(S') \right)\\
+  &Q(S, a) = R(S, a) + \gamma \sum_{S'} T(S, a, S') max_{a'} Q(S', a')\\
+  &C(S, a) = \gamma \sum_{S'} T(S, a, S') max_{a'} \left( R(S', a') + C(S', a') \right)
+\end{align}
+\section{Behavior Structures}
+We are trying to learn different ways of interacting with the environment and pick the one that yields high reward. To achieve that, we introduce the following types of behavior:
+\begin{itemize}
+  \item Plan: The execution of predetermined actions. This approach is not optimal in stochastic environments (where not every action produces the intended result).
+  \item Conditional Plan: The plan contains conditional ('if') statements.
+  \item Stationary Policy / Universal Plan: Mapping state to action (every time the agent enters a new state, it assesses the environment again and draws a new plan). The issue with this approach is that th eplan is very large and policies need to be supplied for every possible state.
+\end{itemize}
+To evaluate a policy in a stochastic environment:
+\begin{enumerate}
+  \item Find the state transitions to immediate rewards
+  \item Find the reward values
+  \item Truncate according to the time horizon $T$
+  \item Summarize each sequence according to $U(S) = \sum_{i = 1}^{T} \gamma^i r_i$
+  \item Summarize over all sequences (by calculating their weighted averages $P = \sum_{S = 1}^{j} U(S_j) P(S_j)$ where $U(S_j)$ is the utility of the $j^th$ state and $P(S_j)$ is the probability of this sequence).
+\end{enumerate}
+To evaluate a learner algorithm, the following indicators should be taken into consideration:
+\begin{itemize}
+  \item Value of returned policy
+  \item Computational complexity
+  \item Sample complexity
+\end{itemize}
+\section{Temporal Difference Learning}
+The model make predictions that take place over time and is called $TD\lambda$. The temporal difference learning is trying the predict the sum of discounted rewards over time. In a specific example of $TD\lambda$, we'll try to learn the value of every state in a Markov process. We can predict the value of a state based on a previous state as:
+\begin{equation*}
+  V_T(S_1) = \frac{(T - 1) V_{T - 1}(S_1) + R_T(S_1)}{T}
+\end{equation*}
+Where $V_T(S_1)$ is the value of the state, $R_T(S_1)$ is the reward for entering the state, $V_{T - 1}(S_1)$ is the sum of discounted values for all states until the previous moment in time, defined as $(T - 1)$.
+We can tranform this equation to:
+\begin{equation}
+  V_T(S_1) = V_{T - 1}(S_1) + \alpha_T \left( R_T(S_1) - V_{T - 1}(S_1) \right)
+\end{equation}
+Where $\alpha_T = \frac{1}{T}$ is the learning rate. The idea is that we add up some corrections to the previous results in every new epoch (every time the evaluation is done). The learning rate gets smaller and smaller at every epoch and we approach the actual value to be learned.
+Thus the new value is the difference between the reward that we got at the current step minus the value that we estimated at the previous step. In this expression of the $TD\lambda$, $\left( R_T(S_1) - V_{T - 1}(S_1) \right)$ is the error.
+\subsection{Properties of the Learning Rates}
+The value of the prediction eventually converges to the real value $\lim_{T\to\infty} V_T(S) = V(S)$, but on two conditions:
+\begin{align}
+  &\sum_{T} \alpha_T = \infty\\
+  &\sum_{T} \alpha_T^2 < \infty
+\end{align}
+\subsection{TD(1) Rule}
+The TD(1) Rule dictates that for every episode 'T' (epoch):
+\begin{enumerate}
+  \item Initialize the eligibility of all states: $e(S) = 0$ at the beginning of the episode
+  \item Initialize the estimate for the current episode with the value from the previous episode $V_T(S) = V_{T - 1}(S)$
+  \item Each time we take a step within the episode, we get a reward: $S_{t - 1} \xrightarrow{r_t} S_t$
+  \item We update the eligibility of the state we just left: $e(S_{t - 1}) = e(S_{t - 1}) + 1$
+  \item We compute the temporal difference for all states: $V_T(S) = V_T(S) + \newline \alpha_T \left( r_t + \gamma V_{T - 1}(S_t) - V_{T - 1}(S_{t - 1}) \right) e(S)$
+  \item We decay the eligibility for the state we just left: $e(S) = \gamma e(S)$
+\end{enumerate}
+\begin{framed}
+  Example:
+  For the following sequence $S_1 \xrightarrow{r_1} S_2 \xrightarrow{r_2} S_3 \xrightarrow{r_3} S_F$, let's calculate the corresponding values:
+  \begin{align*}
+    &\Delta V_T(S_1) = \alpha \left( r_1 + \gamma r_2 + \gamma^2 r_3 + \gamma^3 V_{T - 1} (S_F) - V_{T - 1} (S_1) \right) \\
+    &\Delta V_T(S_2) = \alpha \left( r_2 + \gamma r_3 + \gamma^2 V_{T - 1} (S_F) - V_{T - 1} (S_2) \right) \\
+    &\Delta V_T(S_3) = \alpha \left( r_3 + \gamma V_{T - 1} (S_F) - V_{T - 1} (S_3) \right)
+  \end{align*}
+\end{framed}
+The problem with the TD(1) rule is that it is far off from the maximum likelihood estimate. This is because TD(1) is using data from individual runs. So when a rare event occurs in a run, the estimate deviates a lot from the truth.
+\subsection{TD(0) Rule}
+This rule computes the maximum likelyhood estimate given the data is repeated. If a finite set of data is infinitely repeated, we get the effect of having an infinite set of data. The rule is defined as:
+\begin{align*}
+  &V_T(S_{t - 1}) = V_T(S_{t - 1}) + \alpha_T \left( r_t \gamma V_T(S_t) - V_T(S_{t - 1}) \right) \\
+  &V_T(S_{t - 1}) = \exists_{S_t} \left[ r + \gamma V_T(S_t) \right]
+\end{align*}
+\subsection{TD(Lambda) Rule}
+Both TD(0) and TD(1) have updates based on the difference between temporally successive predictions. That's why they can become local cases of an algorithm that unites both of them. The rule is almost identical to TD(1), but contains a multiplier at the decaying step $e(S) = \lambda \gamma e(S)$:
+\begin{enumerate}
+  \item Initialize the eligibility of all states: $e(S) = 0$ at the beginning of the episode
+  \item Initialize the estimate for the current episode with the value from the previous episode $V_T(S) = V_{T - 1}(S)$
+  \item Each time we take a step within the episode, we get a reward: $S_{t - 1} \xrightarrow{r_t} S_t$
+  \item We update the eligibility of the state we just left: $e(S_{t - 1}) = e(S_{t - 1}) + 1$
+  \item We compute the temporal difference for all states: $V_T(S) = V_T(S) + \newline \alpha_T \left( r_t + \gamma V_{T - 1}(S_t) - V_{T - 1}(S_{t - 1}) \right) e(S)$
+  \item We decay the eligibility for the state we just left: $e(S) = \lambda \gamma e(S)$
+\end{enumerate}
+\subsection{K-Step Estimators}
+K-step estimators can be thought of as various shades in between TD(0) and TD(1). They can be defined as:
+\begin{align*}
+  (E_1) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma V(S_{t + 1}) - V(S_t) \right) \\
+  (E_2) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma r_{t + 2} + \gamma^2 V(S_{t + 2}) - V(S_t) \right) \\
+  (E_3) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \gamma r_{t + 2} + \gamma^2 r_{t + 3} \gamma^3 V(S_{t + 3}) - V(S_t) \right) \\
+  (E_K) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \ldots + \gamma^{K - 1} r_{t + K} \gamma^K V(S_{t + K}) - V(S_t) \right) \\
+  (E_{\infty}) \quad V(S_t) &= V(S_t) + \alpha_T \left( r_{t + 1} + \ldots + \gamma^{K - 1} r_{t + K} \ldots - V(S_t) \right)
+\end{align*}
+Here, the first equation represents the TD(0) rule and the last one represents the TD(1) rule.
+\subsection{K-Step Estimators and TD(Lambda)}
+We can use a weighted combination of all K-step estimators. The weight we'll use is: $\lambda^{K - 1} (1 - \lambda)$. When lambda is 1, we put all the weight on the last estimator (the TD(1) rule) and when lambda is 0, we put all the weight on the first estimator (the TD(0) rule). All lambda values between 0 and 1 result in a weighted combination of all K-step estimators. Empyrically, the dependency between the error of the value estimation and lambda looks like this: \newline
+\begin{tikzpicture}
+  \draw[thick,->] (0,0) -- (4.5,0) node[anchor=north west] {$\lambda$};
+
+  \draw (0,0) -- (4,0);
+  \foreach \x in {0,1}
+    \draw (\x * 4 cm,1pt) -- (\x * 4 cm,-1pt) node[anchor=north] {$\x$};
+
+  \draw[thick,->] (0,0) -- (0,4.5) node[anchor=south east] {Err(V)};
+  \draw (0,1) .. controls (1,0.5) and (3,0.25) .. (4,4);
+\end{tikzpicture}
+This means that lambda values between 0 and 1 would produce the most accurate results for temporal difference learning. The values where lambda bottoms out are between 0.3 and 0.7.
+\begin{framed}
+  The typical lambda value, most oftenly used is 0.7
+\end{framed}
+
+\end{document}

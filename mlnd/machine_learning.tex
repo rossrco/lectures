@@ -1,0 +1,680 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{framed} %for important notes that need to be framed
+\usepackage{tikz}
+\usepackage{multicol} %for multi-column bullet points
+\usepackage{float} %for placing figures at the exact place as in the code
+\usepackage{lscape} %for inserting landscape pages
+\usepackage{makecell} %for specifying line breaks within table cells
+
+\usepackage[a4paper, total={7in, 10in}]{geometry} %for formatting the sheet size
+
+\usepackage{graphicx}
+\graphicspath{ {./visualizations/} } %for inserting figures
+
+\usepackage{hyperref} %for hyperlinks
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    filecolor = magenta,
+    urlcolor = cyan,
+}
+
+\title{Udacity Machine Learning Nanodegree - Course Notes}
+
+\author{Ruslan Kozhuharov}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\setlength{\parskip}{1em}
+
+\section{Model Evaluation}
+\subsection{Confusion Matrix}
+The following table is called a confusion matrix:
+
+\begin{center}
+\begin{tabular}{ |l|l|l| }
+  \hline
+   & predicted 1 & predicted 0 \\
+  \hline
+  actual 1 & true positive & false negative \\
+  actual 0 & false positive & false negative \\
+  \hline
+\end{tabular}
+\end{center}
+
+The total number of cases is: true positives + true negatives + false negatives + false positives.
+
+\subsection{Accuracy}
+Accuracy is defined as: (true positives + true negatives) / total cases.
+If the data is severely skewed, the accuracy metric is misleading. If 250 000 credit card transactions are non-fraudulent and there are 500 fraudulent, a model that always predicts a non-fraudulent transaction has an accuracy of 99.8%.
+
+\subsection{Precision}
+Precision is defined as: out of all points predicted to be 1 how many are actually 1? The formulation is: true positives / (true positives + false positives). This corresponds to the first column of the confusion matrix. A spam filter model needs to have a high precision. This is because we want to have as few false positives (emails mistakenly identified as spam) as possible.
+
+\subsection{Recall}
+Recall can be defined as: out of all points that actually are 1, how many are correctly predicted as 1? The formulation is: true positives / (true positives + false negatives). This corresponds to the first row of the confusion matrix. A medical model needs to have a high recall in order to catch as many sick (positives) patients as possible. This prioritizes labeling the 1s correctly. This is because if a patient is falsely diagnosed as sick, they could be sent for further tests and could have some discomfort but no sick patient will be sent home.
+
+\subsection{F1 Score}
+F1 score is defined as:
+
+\begin{equation}
+  F1 = 2 * \frac{precision * recall}{precision + recall}
+\end{equation}
+
+This is the harmonic mean of precision and recall.
+
+\subsection{Fbeta Score}
+Fbeta score is defined as:
+
+\begin{equation}
+  F_\beta = (1 + \beta^2) * \frac{precision * recall}{\beta^2 * precision + recall}
+\end{equation}
+
+Lower beta values skew the formula towards precision ($F_0 = precision$) and higher beta values skew the score towards recall ($F_\infty = recall$).
+
+True positive rate is true positives / all positives, while the false positive rate is the false positives / all negatives.
+
+\subsection{ROC Curves}
+Receiver Operating Characteristic (ROC) curves. This is a curve created by plotting the true positive rate and false positive rate as the x, y coordinates of every possible split of the model. This gives us a 2 dimensional curve. The area under this curve is the ROC score. It is 1 for a perfect classifier and 0.5 for a random classifier. The ROC score could be 0 if the model misclassifies every single point.
+
+\subsection{Regression Metrics}
+
+\begin{itemize}
+  \item mean absolute error
+  \item mean squared error (MSE)
+  \item R2 score
+\end{itemize}
+
+R2 score is a comparison between our model and the simplest possible model. For a linear regression, such a baseline model could just be a horizontal line drawn between the points. In this case, the R2 score is:
+
+\begin{equation}
+  R2 = 1 - \frac{MSE (current)}{MSE (baseline)}
+\end{equation}
+
+\section{Model Selection}
+\subsection{K-Fold Cross Validation}
+It’s method of recycling our data in order to better utilize it for training and testing. Using this method we don’t ‘lose’ data for testing without violating the rule of use of the test set (never use the test set for training).
+
+\begin{enumerate}
+  \item We break the data into K buckets.
+  \item We train our model K times, each time using a different bucket as our testing set (and the remaining points as our training set).
+  \item We average the results from the K training to get a final model.
+\end{enumerate}
+
+\subsection{Learning Curves}
+If we plot on the x axis the number of training points used and on the y axis error, we can plot 2 series:
+
+\begin{itemize}
+  \item Error on training set
+  \item Error on testing set
+\end{itemize}
+
+Those two curves behave differently depending on the goodness of the model:
+
+\begin{itemize}
+  \item High bias model (underfitting): the training and the testing errors converge to a medium to high error.
+  \item Good model: the training and testing errors converge to a low error.
+  \item High variance model (overfitting): the training and testing errors don’t converge. This is because overfitted models always have very low errors on the training set, but don’t generalize well, therefore having a large error on the testing set.
+\end{itemize}
+
+\subsection{Grid Search}
+Grid search is a technique for hyperparameter tuning. It creates a n-dimensional grid of all hyperparameters and their possible values and tests every cell of the grid against a validation set. The best model is then chosen and tested on the testing set.
+
+For hyperparameters, it’s generally recommended to take values that grow exponentially (e.g. 1, 10, 100, 1000, etc.).
+
+\section{Supervised Learning}
+\subsection{Linear Regression}
+The linear regression algorithm draws a line that fits best a group of points. The line in two dimensions is determined by the linear equation:
+
+\begin{equation}
+  y = w_1 x + w_2
+\end{equation}
+
+Here, $w_1$ is the slope and $w_2$ is the intercept. Linear regression can be done using several different methods. Two of these methods are:
+
+\begin{itemize}
+  \item The Absolute Trick
+  \begin{enumerate}
+    \item We start with a line: $y = w_1 x + w_2$
+    \item We have a point with coordinates $(p, q)$, where p is the horizontal coordinate.
+    \item At each step, we translate and rotate the line according to the equation: $y = (w_1 + p * \alpha) * x + (w_2 + \alpha)$, where $\alpha$ is the learning rate. If the line is on top of the point, we subtract the learning rate instead of adding it. The horizontal coordinate P is used in the equation in order to account for the case where that coordinate is negative. In this case the line will rotate accordingly. Also, if p is small (close to the y axis), the rotation will be small.
+    \item We repeat step 3 until the error is minimized.
+  \end{enumerate}
+  \item The Square Trick
+  \begin{enumerate}
+    \item We start with a line: $y = w_1 x + w_2$
+    \item We have a point with coordinates (p, q), where p is the horizontal coordinate. We will designate q’ as the point where a line originating from (p, q) crosses the linear regression line. In this case q - q’ is the distance between the point and the linear regression line.
+    \item At each step, we translate and rotate the line according to the equation: $y = (w_1 + p (q - q') * \alpha) * x + (w_2 + p (q - q') * \alpha)$. If the line is on top the distance will be negative so the line will translate and rotate down automatically. Using the distance as a multiplier to the learning rate helps the algorithm converge faster.
+    \item We repeat step 3 until the error is minimized.
+  \end{enumerate}
+\end{itemize}
+
+For the error, we can use the mean absolute error and the mean squared error. The mean absolute error is defined as:
+
+\begin{equation}
+  \frac{1}{m}\sum_{i = 1}^{m}|y - \hat{y}|
+\end{equation}
+
+The mean squared error is defined as:
+
+\begin{equation}
+  \frac{1}{m}\sum_{i = 1}^{m}(y - \hat{y})^2
+\end{equation}
+
+To minimize the error:
+
+\begin{enumerate}
+  \item We take the partial derivative of our chosen error function with regards to the weights of the line equation.
+  \item We take a step towards lowering the derivative of the error.
+  \item We repeat step 2 until we reach a minimum.
+\end{enumerate}
+
+In our case the derivative of the mean absolute error is the same as the equation from the ‘absolute trick’, while the derivative of the mean squared error is the same as the equation in the ‘square trick’.
+
+\subsection{Batch VS Stochastic Gradient Descent}
+In the context of linear regression, we could either:
+
+\begin{itemize}
+  \item Apply the absolute / square trick for every point of our data one by one and repeating it many times. When we do that, we get values to update our model weights with at every point. This approach is called stochastic gradient descent.
+  \item Apply the absolute / square trick for all points of our data simultaneously. Here we add all the update values and update the weights at the end of the process. This approach is called batch gradient descent.
+\end{itemize}
+
+In practice (and it is applicable for large datasets), the dataset is split into small batches, gradient descent is run for every batch and the weights are updated. This is called mini-batch gradient descent.
+
+\subsection{Regularization}
+Used for selecting simpler models with higher validation error over complex models with small validation error to prevent overfitting. The general concept is that we add the complexity of the model to the error. One way to do is to add the absolute value of the non-intercept coefficients to the model. The simpler the model, the less coefficients there will be. Regularization can be done in two ways:
+
+\begin{itemize}
+  \item L1 regularization: We add the sum of the absolute values of the coefficients to the error of the model.
+  \item L2 regularization: We add the squares of the coefficients.
+\end{itemize}
+
+Some models need to be less complex (e.g. video recommendation system that works with a lot of data and performance is important), while other models need to be more precise, no matter the complexity (e.g. medical model). That’s why we can use a parameter lambda (ƛ) to determine the level of complexity punishment. Small lambda allow for more complex models, while large lambda increases the complexity punishment.
+
+Here is a L1, L2 regularization cheatsheet:
+
+\begin{center}
+\begin{tabular}{ |l|l|l| }
+  \hline
+   Feature & L1 & L2 \\
+  \hline
+  computationally efficient & No & Yes \\
+  faster for sparse data & Yes & No \\
+  \makecell{detects important features and sets the \\ punishment for unimportant ones to 0} & Yes & No \\
+  \hline
+\end{tabular}
+\end{center}
+
+\subsection{Perceptron}
+In a 2-dimensional classification problem, we need to split the space of two features into two regions (corresponding to the two classification labels). Let’s say that we can split the two regions with a simple line, where it’s equation is: $w_1 x_1 + w_2 x_2 + b = 0$. We can express this as Wx + b = 0, where W is the vector of the weights (w1, w2) and x is the vector of the coordinates of a given point (x1, x2). We can then say that our classification function $\hat{y}$ is:
+
+\begin{equation}
+  \hat{y} = \left\{
+              \begin{array}{ll}
+                1 , Wx + b \geq 0\\
+                0 , Wx + b < 0
+                \end{array}
+              \right.
+\end{equation}
+
+Defined such, this technique can be extended to higher dimensions. There, the vectors W and x are simply defined as ($w_1$, $w_2$, …, $w_n$) and ($x_1$, $x_2$, …, $x_n$).
+
+In order to update the weights of the perceptron, for every misclassified point we add or subtract (depending on the classification label) the points coordinates times the learning rate to the weights. This slightly changes the equation of the line (plane, hyperplane, etc.). We repeat this process until the decision boundary is optimal with as little misclassifications as possible.
+
+\subsection{Decision Trees}
+The more knowledge we have of a system, the less informational entropy it has. We will define informational entropy as:
+
+\begin{equation}
+  E = - \sum_{i = 1}^{n} p_i \log_2(p_i)
+\end{equation}
+
+Here $p_i$ is the probability of the $i^{th}$ feature.
+
+Information gain is defined as change in entropy:
+
+\begin{equation}
+  InfGain = E(parent) - \left( \frac{m}{m + n} E(child_1) + \frac{m}{m + n} E(child_2) \right)
+\end{equation}
+
+Here $m$ and $n$ are the number of samples in each node.
+
+This means that for each split, our decision tree needs to maximize information gain. This means that the tree will make random splits and measure the information gain. At each step the tree tries to make a new split that maximizes the information gain. When no more improvement is done, the tree attempts a new split. The problem with that approach is that it tends to overfit a lot.
+
+One way to solve this problem is to pick few random sets of only 2-3 features, build trees on them and let them vote. The average prediction of all small trees is the prediction of the ensemble. This approach is known as random forests.
+
+\subsection{Naive Bayes}
+The Bayes theorem switches from what we know to what we can infer. We take what we know and base what we can infer on it. Example: if we know that when it rains, the weather is cloudy, then we try to infer whether it will rain based on the fact that it is cloudy. If we know the probability of R given A, we infer the probability of A given R: $P(R|A) \rightarrow P(A|R)$.
+
+The simple version of the Bayes theorem is:
+
+\begin{equation}
+  P(A|B) = \frac{P(A) P(B|A)}{P(B)}
+\end{equation}
+
+The ‘naive’ in the Naive Bayes algorithm is the assumption that all events, for which we calculate the posterior probability are independent of each other. That means that we can multiply the posterior probabilities of all the possible events for class 1 and class 0. We then multiply them by the probability of class 1 or 0. Finally, we normalize:
+
+\begin{equation}
+  \begin{aligned}
+    P(A_1|B, C, D) &\sim P(B|A_1) P(C|A_1) P(D|A_1) P(A_1) \\
+    P(A_2|B, C, D) &\sim P(B|A_2) P(C|A_2) P(D|A_2) P(A_2) \\
+    P(A_1|B, C, D) &= \frac{P(A_1|B, C, D)}{P(A_1|B, C, D) + P(A_2|B, C, D)}
+  \end{aligned}
+\end{equation}
+
+\subsection{Support Vector Machines}
+SVM is an algorithm that tries to find a classification boundary in a set of points where the margin between the two classes is as wide as possible. This is achieved by minimizing the sum of the classification error and the margin error.
+
+The classification error is the sum of the absolute values of the line $Wx + b$ at every misclassified point (where W and x are vectors). This error resembles the perceptron function error.
+
+\begin{framed}
+  Example: if a misclassified point is on a line parallel to the perfect split and the distance between the perfect line and the misclassification line is 1, then the point lies on the line: $Wx + b = 1$.
+\end{framed}
+
+In order to punish the points in the boundary for the SVM algorithm, we consider the error of one class starting from: $Wx + b = 1$ and for the other class from: $Wx + b = -1$. That way we are punishing the misclassified points as well as the points in the boundary.
+
+If we have two support vectors with equations $Wx + b = 1$ and $Wx + b = -1$, then the margin is defined as:
+
+\begin{equation}
+  M = \frac{2}{|W|}
+\end{equation}
+
+So if we want to make the error inversely-proportional to the margin, we can just take the norm of the weights vector: $|W|$. The margin error is then defined as the norm of the components of vector $W$ squared:
+
+\begin{equation}
+  E = |W|^2
+\end{equation}
+
+The final error function is the classification error plus the margin error. We minimize this error using gradient descent.
+
+The ‘C’ parameter is multiplier to the classification error, that way we have the flexibility to specify in any model, how much the classification error and how much the margin error matters:
+
+\begin{equation}
+  E = C * E_{classification} + E_{margin}
+\end{equation}
+
+\subsubsection{Polynomial Kernel}
+A polynomial kernel takes the data to a higher dimension, creates the corresponding polynomial, extracts the coefficients and returns them as solutions to the lower dimensions. One example is if we have a line with points that are inseparable by a single cut. We then arrange them on the parabolic function $y = x^2$.
+
+We place the points on the parabola. If we find a cut in the line $y = 4$, we translate the solution to 1 dimension. We do that by solving for the polynomial (the solutions are 2 and -2). So as a result we have two cuts that separate the points. This is also known as the kernel trick. Thus, if we want to raise a 1 dimensional data to a higher dimension, we could use a function of the type: $x^2$, if we want to raise a 2 dimensional data to a higher dimension, we can use: $xy, x^2y, x^3$, etc.
+
+The degree of a polynomial kernel is a hyperparameter that can be trained to find the best possible model.
+
+\subsubsection{Radial Basis Function Kernel}
+In this method, we draw the radial basis functions for every point. We then iterate through radius vectors that are suitable for cutting the different classes of points with an object in the same dimension (line, circle, plane, etc.). Finally, we project down the object to the original dimensions. For 1-dimensional data, the result from projecting another line are the points where we cut the classes. The hyper-parameter gamma allows us to specify the curve radius for every radial basis function. Large gamma gives us ‘pointy mountains’, while small one makes the curves rounder. This is because gamma is defined (in terms of the normal distribution) as: $\gamma = \frac{1}{2\sigma^2}$. Large gammas translate as very narrow class decision areas and therefore have a high chance of overfitting.
+
+\subsection{Ensemble Methods}
+Ensemble methods are a set of techniques where we utilize several weak models to create a strong prediction. In general, there are two categories of ensemble methods: bagging (bootstrap aggregating) and boosting.
+
+\begin{itemize}
+  \item Bagging is a method where we get predictions from the weak learners, we then average the prediction and get our result.
+  \item Boosting is a method where each weak learner focuses only on a small sample of the dataset and attempts to predict it correctly. We then combine the predictions for different areas of the dataset from different weak learners to create a strong learner.
+\end{itemize}
+
+\subsubsection{Bagging Method}
+With the bagging method, we usually utilize tree stubs (decision trees with only 1 level) on random subsets of the data. This means that two samples can pick the same point (samples can overlap) and this is OK as long as the samples are random. For each random sample, we create a stub. At the end we combine the results of the stubs by voting. Example: a point is covered by 3 stubs, 2 of them vote category 1 and the other one votes category 0, therefore, we predict category 1.
+
+\subsubsection{Boosting Method With AdaBoost}
+We’ll attempt to minimize the sum of the weights of the incorrectly-classified points.
+
+\begin{enumerate}
+  \item We assign to each point in the dataset an initial weight of 1.
+  \item We create a decision tree stub.
+  \item We change the weights of the incorrectly-classified points to: number correctly-classified / number incorrectly-classified (from the stub in step 2).
+  \item We repeat step 2-3 for certain number of cycles.
+  \item We assign a weight to all the weak learners produced in step 4. The weight is: $w = ln \left( \frac{accuracy}{1 - accuracy} \right)$. In the extreme cases of division by zero or accuracy 0 (where $ln(0)$ is undefined), we know that the model either predicts the data infinitely-correctly or infinitely-incorrectly, so we can ignore all the other stubs and just use the current one. This case, however is almost impossible to happen in practice.
+  \item We combine the stubs from step 4 by vote and weighting the vote by the weights from step 5. This vote is basically the weighted sum of the model predictions for every point. If the values are positive, the result is class 1, if the values are negative, the result is class 0.
+\end{enumerate}
+
+\section{Unsupervised Learning}
+\subsection{K-Means Clustering}
+K-means clustering assigns a user-specified number of clusters to unlabeled data. There are two steps in the K-means algorithm:
+
+\begin{itemize}
+  \item Assignment: where points are assigned to their centroid.
+  \item Optimization: where the centroid is moved to an optimal location.
+\end{itemize}
+
+The essence of the algorithm is to select cluster centroids such that minimize the within-cluster sum of squares, expressed in the following equation:
+
+\begin{equation}
+  \sum_{i = 1}^{n} min_{\mu j \in C} \left( ||x_j - \mu_j||^2 \right)
+\end{equation}
+
+K-means is very dependent on the initial placements of the centroids. In this case, the danger is the so-called ‘unsupervised learning local minimum’ where 3 neat clusters could be misrepresented as 1 big clusters (containing 2 groups of data points) and 2 small clusters (dividing evenly 1 actual group of data points).
+
+The K-means clustering algorithm is advantageous if we know the number of clusters beforehand and if they are neatly-separated. However, K-means relies on distance between points and centroids. Therefore, the results of applying of K-means are always circular, spherical or hyperspherical. K-means is not able to carve out the two-crescent dataset, for example.
+
+\subsection{Hierarchical Clustering}
+Hierarchical clustering methods assume that initially every point is a cluster. At the next pass, points closest to each other form a cluster of two points. The constitutes one level of the hierarchical tree (dendrogram). At this point the hierarchical clustering methods start combining points with existing clusters (from the first pass). There lies the principal differences between all hierarchical clustering methods - in the way the smallest distance between a cluster and a point is measured. In other words, the specific clustering method answers the question: how is the shortest distance between two clusters defined? Is it the shortest distance between points from each cluster or is it some averaged variable.
+
+For single link clustering, the shortest distance is defined as the shortest distance between any two points of the two clusters being compared. This, however leads single-link clustering to produce elongated clusters or to having a single cluster eating-up most of the dataset. This could be a problem if we want more compact, spherical and separated clusters. Single link clustering methods separate well the two crescents and the two rings datasets.
+
+Dendrograms are really useful tools for clustering because they visualize the relationship between clusters well for data that has more than two dimensions. If we try to eyeball clusters on a scatter plot, having more than two dimensions will make it impossible. However, dendrograms present clusters on a graph independently of the dimensionality of a dataset.
+
+Agglomerative clustering is the family of algorithms that start from the bottom-up, assuming that each point is a cluster and building higher-order clusters from there on.
+
+Some important types of agglomerative, hierarchical clustering methods are:
+
+\begin{itemize}
+  \item Complete link clustering: it looks at the farthest two points between clusters when grouping. Such a distance measure produces more compact clusters (generally thought of as better than single-link clustering). The disadvantage of this method is that it only looks at the farthest point in a cluster. Once this point is found the rest of the points are ignored, even though they could form another cluster on their own.
+  \item Average link clustering: it looks at the distance between every point in a cluster and every point in the other cluster. The average of all these distances is considered the distance between the two clusters.
+  \item Ward’s method: it tries to minimize variance when merging two clusters.
+\end{itemize}
+
+The main advantages of hierarchical clustering are:
+
+\begin{itemize}
+  \item The resulting representations are highly-informative.
+  \item The representations provide us with additional ability to visualize the clustering (the dendrograms).
+  \item The methods are especially effective when the data contains real hierarchical relationships (e.g. evolutionary biology).
+\end{itemize}
+
+The disadvantages of hierarchical clustering are:
+
+\begin{itemize}
+  \item It is sensitive to noise and outliers.
+  \item It is computationally intensive $O(n^2)$.
+\end{itemize}
+
+\subsection{Density-Based Clustering}
+DBSCAN - density-based spatial clustering of applications with noise. The principal difference between this method and hierarchical clustering methods is that not every point belongs to cluster. Some of the points get labeled as noise, while others, that are densely-packed are labeled as a cluster.
+
+DBSCAN does not take as input the number of clusters to separate. Instead it takes the search radius around each point epsilon and the minimum number of points required to form a density cluster. The DBSCAN algorithm is then defined as:
+
+\begin{enumerate}
+  \item Select a point.
+  \item If the number of points within radius epsilon is less than the minimum number of points to form a density cluster, label the point as noise.
+  \item If the number of points within radius epsilon is more or equal to the minimum number of points, form a cluster of those points.
+  \begin{itemize}
+    \item Select a point from the cluster.
+    \item If the number of points within radius epsilon, belonging to the cluster is less than the min number of points, then the point is a border point.
+    \item Else, the point is a core point.
+  \end{itemize}
+\end{enumerate}
+
+DBSCAN is good at separating the two crescents, the two rings, the three lines (given the right hyperparameters) and especially the three clusters with noise.
+
+The advantages of DBSCAN are:
+
+\begin{itemize}
+  \item We don’t need to specify the number of clusters.
+  \item DBSCAN separates well various shapes and sizes of clusters (unlike K-means which is prone to separating spherical shapes or single-link clustering which is prone to separating elongated shapes).
+  \item Able to deal with noise and outliers.
+\end{itemize}
+
+The disadvantages of DBSCAN are:
+
+\begin{itemize}
+  \item Border points reachable from two clusters are assigned to the cluster that finds them first. Since points are visited in random order, DBSCAN is not guaranteed to return the same results.
+  \item DBSCAN cannot find clusters within the same dataset with varying densities. However, in this case we can use a variant of the algorithm called HDBSCAN.
+\end{itemize}
+
+Some applications of DBSCAN are:
+
+\begin{itemize}
+  \item Classification of network traffic.
+  \item Anomaly detection in temperature data (by utilizing the classification of noise by DBSCAN).
+\end{itemize}
+
+\subsection{Gaussian Mixture Models}
+GMM is a soft clustering algorithm - every point belongs to every cluster but with different percentage of membership. GMM assumes that each cluster represents a Gaussian distribution, so the mean and variance (standard deviation squared) for each distribution can be a measure of belonging of a certain point to a certain cluster.
+
+GMM in more than 1 dimension works by identifying the multivariate Gaussian distributions, finding their properties and assigning percentage of each label for every point.
+
+The algorithm that GMMs use is the expectation maximization algorithm:
+
+\begin{enumerate}
+  \item Initialize k Gaussian distributions. This can be done by first running K-means clustering on the dataset and then using these clusters as initial ones for the GMM. Let’s say that this step has produced clusters A and B.
+  \item Soft cluster the data (expectation step). This is done by calculating the probability density function for every point:
+  \begin{equation}
+    E \left[ Z_{iA} \right] = \frac{N(X_i | \mu_A \sigma_{A}^{2})}{N(X_i | \mu_A \sigma_{A}^{2}) + N(X_i | \mu_B \sigma_{B}^{2})}
+  \end{equation}
+  , where A and B are the two labels (the two clusters), i is the ID of the point, Z is the latent variable. Here, N is defined as:
+  \begin{equation}
+    N(X_i | \mu_A \sigma_{A}^{2}) = \frac{1}{(2 \pi \sigma^2)^2} e^{-\frac{1}{2 \sigma^2}(x - \mu)^2}
+  \end{equation}
+  \item Re-estimate the clusters (maximization step). In this step we calculate a new mean $\mu$ and new variance $\sigma^2$ based on the results of step 2. To calculate the new mean, we take a weighted average of the expectations of all points (for every cluster):
+  \begin{equation}
+    \mu_A = \frac{\sum_{i = 1}^{N} E \left[ Z_{ij} \right] X_i}{\sum_{i = 1}^{N} E \left[ Z_{ij} \right]}
+  \end{equation}
+  To calculate the new variance, we calculate a weighted variance (weighted with the membership to each cluster):
+  \begin{equation}
+    \sigma_A^2 = \frac{\sum_{i = 1}^{N} E \left[ Z_{iA} \right] (X_i - \mu_A^{new})(X_i - \mu_A^{new})^T}{\sum_{i = 1}^{N} E \left[ Z_{iA} \right]}
+  \end{equation}
+  \item Evaluate the log likelihood to check for convergence. We evaluate the log likelihood according to:
+  \begin{equation}
+    ln(p(X|\mu,\sigma^2)) = \sum_{i = 1}^{N} ln\left( \sum_{k = 1}^{K} \pi_k N(X_i|\mu_k, \sigma_k^2) \right)
+  \end{equation}
+  where K is the cluster, $\pi_k$ is the mixing coefficient, N is the normal distribution for each point, given the parameter of the cluster. The higher this number is, the surer we are that the mixture model we generated is responsible for creating the data (fits the data). So we are trying to maximize this term. We iterate until this value reaches a maximum or increases by a very tiny amount.
+  \item Repeat step 2-4 until convergence.
+\end{enumerate}
+
+The advantages of GMM are:
+
+\begin{itemize}
+  \item Soft clustering
+  \item Cluster shape flexibility: a cluster can contain another cluster
+\end{itemize}
+
+The disadvantages of GMM are:
+
+\begin{itemize}
+  \item Sensitive to initialization values
+  \item Possible to converge to a local optimum
+  \item Slow convergence rate
+\end{itemize}
+
+Some applications of GMM are:
+
+\begin{itemize}
+  \item Creating labels of human behavior from the accelerometer reading of a phone (e.g. lunch, jogging, commuting, etc.)
+  \item Biometrics (e.g. identifying signatures, fingerprints, voice recognition, etc.)
+\end{itemize}
+
+\subsection{Cluster Analysis}
+When the data is labeled, we can use external indices (based on the labels). However, in most cases, when performing clustering, the data is not labeled. In this case, we use:
+
+\begin{itemize}
+  \item Internal indices: based on the achieved structure and only the data itself.
+  \item Relative indices: based on comparison between different structures (clusters) and determining which one is better in a certain aspect. Most relative indices are also internal indices.
+\end{itemize}
+
+Internal and relative indices are measured using two main qualities:
+
+\begin{itemize}
+  \item Compactness: measure of how close the elements of a cluster are to each other.
+  \item Separability: measure of how far and distinct clusters are from each other.
+\end{itemize}
+
+External Validation Indices:
+
+\begin{itemize}
+  \item Adjusted Rand Score
+  \item Fawlks and Mallows
+  \item NMI measure
+  \item Jaccard
+  \item F-measure
+  \item Purity
+\end{itemize}
+
+\subsubsection{Adjusted Rand Score}
+The Rand Index is defined as:
+
+\begin{equation}
+  \frac{a + b}{\binom{n}{2}}
+\end{equation}
+
+Where ‘a’ is the number of pairs that are in the same cluster in the actual and the predicted label, ‘b’ is the number of pairs that are in different clusters in the actual and the predicted label, n si the number of points in total. The Adjusted Rand Index includes a discounting factor for the expected Rand Index:
+
+\begin{equation}
+  ARI = \frac{RI - ExpectedIndex}{max(RI) - ExpectedIndex}
+\end{equation}
+
+\subsubsection{Silhouette Index}
+The silhouette index for each point is defined as:
+
+\begin{equation}
+  S_i = \frac{a_i - b_i}{max(a_i, b_i)}
+\end{equation}
+
+Where $a_i$ is the average distance between the point i and other samples in the same cluster, $b_i$ is the average distance between the point i and other samples in the closest neighboring cluster. The final silhouette coefficient is defined as the average of the silhouette scores for every point:
+
+\begin{equation}
+  S = \frac{1}{N} \sum_{i = 1}^{N} S_i
+\end{equation}
+
+It’s important to mention that silhouette score does not have the concept of noise built into it. Therefore, it’s not the right metric for DBSCAN clustering results. One downside of silhouette score is that not built to reward carving out datasets like the two rings. Therefore, algorithms that carve out the two rings perfectly (like single link clustering) get a lower silhouette score there than K-means.
+
+For clusters achieved using DBSCAN, the Density Based Clustering Validations (DBCV) is a much better internal score than the silhouette index.
+
+\subsection{Feature Scaling}
+To make features’ impact on the model independent of their scale, we need to re-scale them by using the following formula:
+
+\begin{equation}
+  x' = \frac{x - x_{min}}{x_{max} - x_{min}}
+\end{equation}
+
+Each re-scaled feature can then be used for deriving the model. Some models, however are unaffected by the features’ scale (e.g. linear regression, decision trees), while other are (e.g. SVM).
+
+\subsection{Principal Component Analysis}
+Out of the existing data, PCA finds a new coordinate system, where the x’ axis is along the direction of the most variation of the data, the center of origin is at the ‘middle’ of the data and the y’ axis is orthogonal to the x’ axis.
+
+When using PCA, it is important to understand the latent variables - the features that are really driving the trends behind the target variable. If these are identified, the dataset, which could contain hundreds of features could be reduced to the latent features using PCA. Example of this could be transforming the square footage and number of rooms in a house to a composite feature called ‘house size’, since the two original features are an objective and a subjective measures of the size.
+
+The advantage of projecting the principal component along the direction of largest variance is that we retain the maximum amount of information from the original data.
+
+To scale PCA beyond our intuition of the data, we can take all features and apply PCA to them. The PCA will then combine the features and rank the relative powers of the combinations. So if we have 2 latent features, PCA will pick them out and call them the 1st and 2nd principal components.
+
+PCA should be used to:
+
+\begin{itemize}
+  \item Identify latent features in the data
+  \item Reduce the dimensions of the data (e.g. for visualization of the data or for easier applications of k-means clustering)
+  \item Reduce noise
+  \item Pre-process the data before using it in another algorithm (e.g. regression or classification). In the cases of high-input dimensionality, the algorithm could fit to noise or end up running very slow. In this respect, PCA helps reduce noise and highlights the underlying trends in the data.
+\end{itemize}
+
+\subsection{Random Projection}
+Random projection is done when the dimensions are so many that PCA is computationally inefficient. Instead of trying to find the direction of maximum variance like PCA, random projection just draws a random line and projects certain dimensions on it. For a dataset with a few dimensions, this produces a suboptimal effect but for a dataset with a large number of dimensions, it actually works.
+
+In practice, the dimensionality is reduced by multiplying the dataset by a random matrix. From d dimensions to k dimensions it looks like:
+
+\begin{equation}
+  X_{kxN}^{RP} = R_{kxd} X_{dxN}
+\end{equation}
+
+The theoretical underpinning of random projection is the Johnson-Lindenstrauss lemma:
+
+\begin{framed}
+A dataset of N points in high-dimensional, Euclidean space can be mapped down to a space in much lower dimension in a way that preserves the distance between the points to a large degree.
+\end{framed}
+
+The distance between the points is slightly distorted, but by a limited factor called epsilon:
+
+\begin{equation}
+  (1 - \epsilon) ||u - v||^2 < ||p(u) - p(v)||^2 < (1 + \epsilon) ||u - v||^2
+\end{equation}
+
+The distance between two points in the projected version is squeezed between $(1 - \epsilon)$ and $(1 + \epsilon)$.
+
+In this sense, epsilon controls the number of dimensions our result will contain.
+
+\subsection{Independent Component Analysis}
+ICA assumes that the features in a dataset are a mixture of independent sources and tries to isolate these independent sources. A classic example is several recordings of some musical instruments and some noise playing simultaneously. In this example ICA would help us isolate the sounds of each instrument (this type of problem is called ‘blind source separation).
+
+The ICA algorithm is based on the notion that our input is formed by a vector of signals S multiplied by a mixing matrix A (X = SA). We can then find an ‘unmixing matrix’ W that approximates $A^{-1}$ such that S = WX. The algorithm then is:
+
+\begin{enumerate}
+  \item Center and whiten X
+  \item Choose an initial random weights matrix
+  \item Estimate W
+  \item Decorrelate W
+  \item Repeat steps 3 and 4 until convergence
+\end{enumerate}
+
+It’s important to note that ICA assumes that the independent components are non-Gaussian. Then based on the central limit theorem: the distribution of the sum of independent variables tends towards a Gaussian distribution.
+
+\section{Deep Learning}
+\subsection{Neural Networks}
+In cases of complex decision boundaries (curves), we cannot utilize a single perceptron to draw a good split between the positive and negative decision regions. That’s why we can utilize a network of several perceptrons. In order to optimize against a useful metric, we will define the so called error function.
+
+\subsubsection{Error Function}
+If we are using the accuracy as an error metric, we may end up stuck moving a line between positions where the accuracy is the same. Therefore the error function cannot be discrete, it should be continuous. That’s why we need a function that assigns a small penalty to correctly-classified points and large penalty for incorrectly-classified points. We could use the distance from the line for incorrectly-classified points as a measure for the error.
+
+In order to create a continuous error function, we need to make a continuous prediction. To move from a discrete to continuous prediction, we need to change the activation function of the perceptron from step function to logistic function. In this case, the perceptron will have the following formulation:
+
+\begin{equation}
+  \sigma(x) = \frac{1}{1 + e^{-x}}
+\end{equation}
+
+To combine the sigmoid function with our weight function, we represent the lines throughout the decision space as Wx+b = -2, -1, 0, 1, 2, etc. As a result the prediction is:
+
+\begin{equation}
+  \hat{y} = \sigma(Wx + b)
+\end{equation}
+
+\subsubsection{Softmax Function}
+In the case of multiple labels we need to produce probabilities that add up to one. One way of doing that is by dividing the linear score for each label from the perceptron function by the sum of all other label scores. However, since the perceptron is based on a linear function $Wx + b = 0$, then the resulting scores from it could be positive as well as negative. This means that we can end up with a divisor equal to 0. Therefore we need a function that transforms every score to a positive value. Sucha a function is the exponent. For N classes, with scores Z1, Z2, ...Zn, the softmax function is defined as:
+
+\begin{equation}
+  P_{class-i} = \frac{e^{Z_i}}{\sum_{i = 1}^{N} e^{Z_i}}
+\end{equation}
+
+In the cases of only two classes the softmax function is equal to the logistic function. In the case of multiple classes, they need to be one-hot encoded.
+
+\subsubsection{Maximum Likelihood}
+The maximum likelihood method picks the model that gives the existing labels the highest probabilities. Thus by maximizing the probabilities, we can pick the best possible model.
+
+If we treat all points as independent events we can calculate the probability that the result is as it is. We do this by multiplying the probabilities for each existing label given by the model (e.g. if a point is red - we use P(red) and vice versa). When we multiply the probabilities for all points, we get the probability that the current model is correct:
+
+\begin{equation}
+  P(arrangement) = \prod_{i = 1}^{N} P_i
+\end{equation}
+
+To improve the model, we try maximizing this probability.
+
+\subsubsection{Cross Entropy}
+Maximizing the probability of the arrangement would in turn minimize the error. However, there is a problem with the approach for calculating the probability of the arrangement. In the case of thousands of data points, the product of probabilities between 0 and 1 becomes tiny. Therefore, we need a similar function that expresses the probability of the arrangement but with summation instead. This function is the logarithmic function, since it turns products into sums: $log(ab) = log(a) + log(b)$. So the probability of the arrangement becomes:
+
+\begin{equation}
+  CE = - \sum_{i = 1}^{N} y_i ln(P_i) + (1 - y_i) ln(1 - P_i)
+\end{equation}
+
+Where $y$ is the label (1 or 0). This expression is called cross entropy. The lower the cross entropy, the better the model. The negative of the logarithm of the probability for each point $(-ln(P_i))$ also can be interpreted as error for the corresponding point. This changes our goal from maximizing probability to minimizing cross entropy. Cross entropy is the connection between probability and error. For multilabel cross entropy, the expression is:
+
+\begin{equation}
+  CE = - \sum_{i = 1}^{n} \sum_{j = 1}^{m} y_{ij} ln(P_{ij})
+\end{equation}
+
+Where $m$ is the number of classes. Our final error function will depend on the cross entropy for each label. For a two label problem, the error function looks like this:
+
+\begin{equation}
+  E(W, b) = - \frac{1}{m} \sum_{i = 1}^{m} (1 - y_i) ln(1 - \sigma(Wx^{(i)} + b)) + y_i ln(\sigma(Wx^{(i)} + b))
+\end{equation}
+
+The multilabel error formula can be derived from the multilabel cross entropy formula.
+
+\subsubsection{Gradient Descent}
+The pseudocode algorithm for gradient descent is:
+
+\begin{enumerate}
+  \item Start with random weights W and bias b and draw a line based on them.
+  \item Calculate the error for every point.
+  \item For every point x:
+  \begin{itemize}
+    \item Update $w_i'$ by adding the learning rate times the derivative of the error with respect to: $w_i : w_i' \leftarrow w_i - \alpha \frac{\partial E}{\partial w_i}$. That is equal to: $w_i' \leftarrow w_i - \alpha (\hat{y} - y) x_i$.
+    \item Update $b : b' \leftarrow b - \alpha \frac{\partial E}{\partial w_i}$. That is equal to: $b' \leftarrow b - \alpha (\hat{y} - y)$.
+  \end{itemize}
+  \item Repeat step 3 until convergence.
+\end{enumerate}
+
+This makes the gradient descent algorithm very similar to the perceptron algorithm. The only difference is that gradient descent produces continuous probabilities for each point, while the perceptron classifies them as 0 or 1 (for the two label case).
+
+
+\end{document}
